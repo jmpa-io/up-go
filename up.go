@@ -103,6 +103,8 @@ func (ub *UpBank) request(cr clientRequest, result interface{}) (*http.Response,
 	if cr.Queries != nil {
 		req.URL.RawQuery = cr.Queries.Encode()
 	}
+	req.Header.Set("Content-Type", "application/json")
+	// Content-Type: application/json
 
 	// fmt.Println(req.URL)
 
@@ -217,13 +219,53 @@ type TagLabels struct {
 	ID   string `json:"id"`
 }
 
+type DataTagLabels struct {
+	Data []TagLabels `json:"data"`
+}
+
 // AddTagsToTransactions ...
 // https://developer.up.com.au/#post_transactions_transactionId_relationships_tags
-func (ub *UpBank) AddTagsToTransactions(id string, labels []TagLabels) error {
+func (ub *UpBank) AddTagsToTransactions(id string, labels []string) error {
+
+	// convert labels to tag labels.
+	var d DataTagLabels
+	for _, l := range labels {
+		d.Data = append(d.Data, TagLabels{
+			Type: "tags",
+			ID:   l,
+		})
+	}
+
+	// send request.
 	cr := clientRequest{
 		Method: http.MethodPost,
 		Path:   fmt.Sprintf("/transactions/%s/relationships/tags", id),
-		Data:   labels,
+		Data:   d,
+	}
+	var r interface{}
+	_, err := ub.request(cr, &r)
+	return err
+}
+
+// RemoveTagsFromTransaction ...
+// https://developer.up.com.au/#delete_transactions_transactionId_relationships_tags
+
+func (ub *UpBank) RemoveTagsFromTransaction(id string, labels []string) error {
+
+	// convert labels to tag labels.
+	var d DataTagLabels
+	for _, l := range labels {
+		d.Data = append(d.Data, TagLabels{
+			Type: "tags",
+			ID:   l,
+		})
+	}
+
+	// send request.
+	cr := clientRequest{
+		Method: http.MethodDelete,
+		Path:   fmt.Sprintf("/transactions/%s/relationships/tags", id),
+		Data:   d,
 	}
 	var r interface{}
 	_, err := ub.request(cr, &r)
