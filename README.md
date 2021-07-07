@@ -4,7 +4,7 @@
 # up
 
 ```diff
-+ A Go abstraction over the Up Bank API. 
++ A Go abstraction over the Up Bank API.
 ```
 
 ## Workflows
