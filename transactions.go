@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -101,6 +102,11 @@ func (c *Client) ListTransactions(options ...ListTransactionsOptions) ([]Transac
 		queries[o.name] = []string{o.value}
 	}
 
+	// default queries.
+	if _, ok := queries["page[size]"]; !ok {
+		queries["page[size]"] = []string{"100"}
+	}
+
 	// setup request.
 	cr := clientRequest{
 		method:  http.MethodGet,
@@ -125,7 +131,7 @@ func (c *Client) ListTransactions(options ...ListTransactionsOptions) ([]Transac
 		if resp.Links.Next == "" {
 			break
 		}
-		cr.path = resp.Links.Next
+		cr.path = strings.Replace(resp.Links.Next, c.endpoint, "", 1)
 		cr.queries = nil
 	}
 	return transactions, nil
