@@ -1,28 +1,21 @@
+---
 name: CI/CD
 on:
   push:
-    branches: [main]
-    paths:
-      - 'go.*'
-      - '**.go'
+  workflow_dispatch:
+  repository_dispatch:
+    types: [trigger]
 
 jobs:
-  run:
-    name: Runs the CI/CD for the repository.
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  lint:
+    uses: jmpa-io/depot/.github/workflows/lint.yml@main
+    secrets:
+      github-token: ${{ secrets.ADMIN_GITHUB_TOKEN }}
 
-      - name: Lint
-        run: echo "lint"
-
-      - name: Test
-        run: echo "test"
-
-      - name: Notify Slack
-        if: always()
-        uses: jmpa-oss/job-to-slack@v0.0.1
-        with:
-          webhook: ${{ secrets.SLACK_GITHUB_WEBHOOK_URL }}
-          status: ${{ job.status }}
+  post-to-slack:
+    needs: [lint]
+    if: always()
+    uses: jmpa-io/depot/.github/workflows/post-to-slack.yml@main
+    secrets:
+      github-token: ${{ secrets.ADMIN_GITHUB_TOKEN }}
+      slack-webhook: ${{ secrets.SLACK_GITHUB_WEBHOOK_URL }}
