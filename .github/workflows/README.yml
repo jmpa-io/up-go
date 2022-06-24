@@ -1,19 +1,22 @@
 ---
-name: CI/CD
+name: README.md
 on:
   push:
+    paths:
+    - '.github/templates/*'
+    - '.github/workflows/*'
+    - 'img/*'
   workflow_dispatch:
-  repository_dispatch:
-    types: [trigger]
 
 jobs:
-  lint:
-    uses: jmpa-io/depot/.github/workflows/lint.yml@main
+  generate-readme:
+    uses: jmpa-io/depot/.github/workflows/README.yml@main
     secrets:
       github-token: ${{ secrets.ADMIN_GITHUB_TOKEN }}
+      slack-webhook: ${{ secrets.SLACK_GITHUB_WEBHOOK_URL }}
 
   post-to-slack:
-    needs: [lint]
+    needs: [generate-readme]
     if: always()
     uses: jmpa-io/depot/.github/workflows/post-to-slack.yml@main
     secrets:
