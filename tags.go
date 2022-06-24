@@ -6,7 +6,7 @@ import (
 )
 
 type TagObject struct {
-	Data  DataObject     `json:"data"`
+	Data  []DataObject   `json:"data"`
 	Links SelfLinkObject `json:"links"`
 }
 
