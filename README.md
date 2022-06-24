@@ -7,10 +7,10 @@
 # up
 
 ```diff
-+ A Go abstraction over the Up Bank API. 
++ A Go abstraction over the Up Bank API.
 ```
 
-## Workflows
+## How do I use this template?
 
 workflow|description
 ---|---
@@ -20,3 +20,10 @@ workflow|description
 [template-cleanup](.github/workflows/template-cleanup.yml)|Cleans up the repository when a child is first created; triggers from the first commit to the repository.
 [update](.github/workflows/update.yml)|Updates repository with changes from parent template.
 
+2. From the root of that child repository, run:
+```bash
+git remote add template https://github.com/jmpa-io/root-template.git
+git fetch template
+git merge template/main --allow-unrelated-histories
+# then fix any merge conflicts as required & 'git push' when ready.
+```
