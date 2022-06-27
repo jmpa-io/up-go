@@ -27,7 +27,7 @@ type TransactionStatus string
 
 const (
 	TransactionStatusHeld    TransactionStatus = "HELD"
-	TransactionStatusSettled TransactionStatus = "SETTELED"
+	TransactionStatusSettled TransactionStatus = "SETTLED"
 )
 
 type TransactionAttributesObject struct {
