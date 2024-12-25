@@ -1,0 +1,58 @@
+{
+  "data": [
+    {
+      "type": "attachments",
+      "id": "8a5df51d-7d30-429d-ace0-65bbb9ff5050",
+      "attributes": {
+        "createdAt": "2024-11-06T14:26:52+11:00",
+        "fileURL": "http://localhost:8080/asset/customer_transaction_attachment.jpg?filename=uploads%2Fcustomer_transaction_attachments%2Fmodels%2Fattachment%2Ffile%2F1%2Fattachment.jpg&timestamp=1730863612&token=2995032bb77ba3cdd19e64942e758101243afebe09baff3ba7b68beb55f42105",
+        "fileURLExpiresAt": "2024-11-06T14:41:52+11:00",
+        "fileExtension": "jpg",
+        "fileContentType": "image/jpeg"
+      },
+      "relationships": {
+        "transaction": {
+          "data": {
+            "type": "transactions",
+            "id": "34de31bd-75df-42c8-9cd2-4fef7d127322"
+          },
+          "links": {
+            "related": "https://api.up.com.au/api/v1/transactions/34de31bd-75df-42c8-9cd2-4fef7d127322"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.up.com.au/api/v1/attachments/8a5df51d-7d30-429d-ace0-65bbb9ff5050"
+      }
+    },
+    {
+      "type": "attachments",
+      "id": "4b9572aa-955f-4ccb-8d82-f0772a43f5c7",
+      "attributes": {
+        "createdAt": "2024-11-06T14:26:52+11:00",
+        "fileURL": "http://localhost:8080/asset/customer_transaction_attachment.jpg?filename=uploads%2Fcustomer_transaction_attachments%2Fmodels%2Fattachment%2Ffile%2F2%2Fattachment.jpg&timestamp=1730863612&token=37a3e7afc6b417a6b840e3de722b4e164915366ad27786e8ccbaa29ac2f1547a",
+        "fileURLExpiresAt": "2024-11-06T14:41:52+11:00",
+        "fileExtension": "jpg",
+        "fileContentType": "image/jpeg"
+      },
+      "relationships": {
+        "transaction": {
+          "data": {
+            "type": "transactions",
+            "id": "c3bbdbcc-a58d-4374-bbc1-d0b2d7eca0b7"
+          },
+          "links": {
+            "related": "https://api.up.com.au/api/v1/transactions/c3bbdbcc-a58d-4374-bbc1-d0b2d7eca0b7"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.up.com.au/api/v1/attachments/4b9572aa-955f-4ccb-8d82-f0772a43f5c7"
+      }
+    }
+  ],
+  "links": {
+    "prev": null,
+    "next": null
+  }
+}

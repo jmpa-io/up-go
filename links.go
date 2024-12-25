@@ -1,14 +1,14 @@
 package up
 
-type LinksObject struct {
-	Prev string `json:"prev"`
-	Next string `json:"next"`
-}
-
-type RelatedLinksObject struct {
+type RelatedLink struct {
 	Related string `json:"related"`
 }
 
-type SelfLinkObject struct {
+type SelfLink struct {
 	Self string `json:"self"`
+}
+
+type PaginationLink struct {
+	Next string `json:"next"`
+	Prev string `json:"prev"`
 }

@@ -1,0 +1,27 @@
+{
+  "data": {
+    "type": "attachments",
+    "id": "797f69e8-3f85-4dc3-a48f-c6fbf12cf084",
+    "attributes": {
+      "createdAt": "2024-11-06T14:26:54+11:00",
+      "fileURL": "http://localhost:8080/asset/customer_transaction_attachment.jpg?filename=uploads%2Fcustomer_transaction_attachments%2Fmodels%2Fattachment%2Ffile%2F5%2Fattachment.jpg&timestamp=1730863614&token=0640320dbbbc48823d5e6acbd0427099448b39c9964848e806766f6b0146a874",
+      "fileURLExpiresAt": "2024-11-06T14:41:54+11:00",
+      "fileExtension": "jpg",
+      "fileContentType": "image/jpeg"
+    },
+    "relationships": {
+      "transaction": {
+        "data": {
+          "type": "transactions",
+          "id": "d9677be0-03c6-4db4-a765-0b2bc170fcbb"
+        },
+        "links": {
+          "related": "https://api.up.com.au/api/v1/transactions/d9677be0-03c6-4db4-a765-0b2bc170fcbb"
+        }
+      }
+    },
+    "links": {
+      "self": "https://api.up.com.au/api/v1/attachments/797f69e8-3f85-4dc3-a48f-c6fbf12cf084"
+    }
+  }
+}

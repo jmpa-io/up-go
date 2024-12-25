@@ -1,6 +1,8 @@
 package up
 
-import "reflect"
+import (
+	"reflect"
+)
 
 // a helper function to check if an interface has a value or not.
 // taken from: https://mangatmodi.medium.com/go-check-nil-interface-the-right-way-d142776edef1
