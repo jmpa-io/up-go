@@ -1,6 +1,6 @@
 package up
 
-type MoneyObject struct {
+type Amount struct {
 	CurrencyCode     string `json:"currencyCode"`
 	Value            string `json:"value"`
 	ValueInBaseUnits int64  `json:"valueInBaseUnits"`

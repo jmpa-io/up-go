@@ -1,11 +1,9 @@
 package up
 
-type DataObject struct {
-	Type string `json:"type"`
-	ID   string `json:"id"`
-}
-
-// dataWrapper is a wrapper used when sending data to the API.
-type dataWrapper struct {
-	Data []interface{} `json:"data"`
+type Data[T any, U any] struct {
+	Type          string   `json:"type"`
+	ID            string   `json:"id"`
+	Attributes    T        `json:"attributes"`
+	Relationships U        `json:"relationships"`
+	Links         SelfLink `json:"links"`
 }

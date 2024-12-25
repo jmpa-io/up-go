@@ -1,68 +1,58 @@
 package up
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
+
+	"go.opentelemetry.io/otel"
 )
 
-type HoldInfoObject struct {
-	Amount        MoneyObject `json:"amount"`
-	ForeignAmount MoneyObject `json:"foreignAmount"`
+type TransactionAttributes struct {
+	Status             string      `json:"status"`
+	RawText            string      `json:"rawText"`
+	Description        string      `json:"description"`
+	Message            string      `json:"message"`
+	IsCategorizable    bool        `json:"isCategorizable"`
+	HoldInfo           interface{} `json:"holdInfo"`
+	RoundUp            interface{} `json:"roundUp"`
+	Cashback           interface{} `json:"cashback"`
+	Amount             Amount      `json:"amount"`
+	ForeignAmount      interface{} `json:"foreignAmount"`
+	CardPurchaseMethod interface{} `json:"cardPurchaseMethod"`
+	SettledAt          time.Time   `json:"settledAt"`
+	CreatedAt          time.Time   `json:"createdAt"`
+	TransactionType    interface{} `json:"transactionType"`
+	Note               string      `json:"note"`
+	PerformingCustomer struct {
+		DisplayName string `json:"displayName"`
+	} `json:"performingCustomer"`
+	DeepLinkURL string `json:"deepLinkURL"`
 }
 
-type RoundUpObject struct {
-	Amount       MoneyObject `json:"amount"`
-	BoostPortion MoneyObject `json:"boostPortion"`
+type TransactionRelationships struct {
+	Account struct {
+		Data struct {
+			Type string `json:"type"`
+			ID   string `json:"id"`
+		} `json:"data"`
+		Links RelatedLink `json:"links"`
+	} `json:"account"`
+	TransferAccount interface{} `json:"transferAccount"`
+	Category        interface{} `json:"category"`
+	ParentCategory  interface{} `json:"parentCategory"`
+	Tags            TagData     `json:"tags"`
+	Attachment      interface{} `json:"attachment"`
 }
 
-type CashbackObject struct {
-	Description string      `json:"description"`
-	Amount      MoneyObject `json:"amount"`
-}
+// TransactionData represents a transaction in Up.
+type TransactionDataWrapper Data[TransactionAttributes, TransactionRelationships]
 
-type TransactionStatus string
-
-const (
-	TransactionStatusHeld    TransactionStatus = "HELD"
-	TransactionStatusSettled TransactionStatus = "SETTLED"
-)
-
-type TransactionAttributesObject struct {
-	Description   string            `json:"description"`
-	Status        TransactionStatus `json:"status"`
-	RawText       string            `json:"rawText"`
-	Message       string            `json:"message"`
-	HoldInfo      HoldInfoObject    `json:"holdInfo"`
-	RoundUp       RoundUpObject     `json:"roundUp"`
-	Cashback      CashbackObject    `json:"cashback"`
-	Amount        MoneyObject       `json:"amount"`
-	ForeignAmount MoneyObject       `json:"foreignAmount"`
-	SettledAt     time.Time         `json:"settledAt"`
-	CreatedAt     time.Time         `json:"createdAt"`
-}
-
-type TransactionRelationshipsObject struct {
-	Account        AccountObject  `json:"account"`
-	Tags           TagObject      `json:"tags"`
-	ParentCategory CategoryObject `json:"parentCategory"`
-	Category       CategoryObject `json:"category"`
-}
-
-type TransactionResourceObject struct {
-	ResourceObject
-	Attributes    TransactionAttributesObject    `json:"attributes"`
-	Relationships TransactionRelationshipsObject `json:"relationships"`
-}
-
-// ListTransactionsResponse represents the response returned from the API when
-// trying to list transactions for the authed account.
-type ListTransactionsResponse struct {
-	Data  []TransactionResourceObject `json:"data"`
-	Links LinksObject                 `json:"links"`
-}
+// TransactionsWrapper is a pagination wrapper for a slice of TransactionData.
+type TransactionPaginationWrapper PaginationWrapper[TransactionDataWrapper]
 
 // ListTransactionsOptions defines the options for listing transactions in the
 // authed account.
@@ -94,7 +84,13 @@ func ListTransactionOptionUntil(until time.Time) ListTransactionsOptions {
 
 // ListTransactions list all transactions for the authed account.
 // https://developer.up.com.au/#get_transactions
-func (c *Client) ListTransactions(options ...ListTransactionsOptions) ([]TransactionResourceObject, error) {
+func (c *Client) ListTransactions(ctx context.Context,
+	options ...ListTransactionsOptions,
+) ([]TransactionAttributes, error) {
+
+	// setup tracing.
+	newCtx, span := otel.Tracer(c.tracerName).Start(ctx, "ListTransactions")
+	defer span.End()
 
 	// setup queries.
 	queries := make(url.Values)
@@ -108,31 +104,33 @@ func (c *Client) ListTransactions(options ...ListTransactionsOptions) ([]Transac
 	}
 
 	// setup request.
-	cr := clientRequest{
+	sr := senderRequest{
 		method:  http.MethodGet,
 		path:    "/transactions",
 		queries: queries,
 	}
 
-	// retrieve transactions.
-	var transactions []TransactionResourceObject
+	// retrieve transactions response.
+	var transactions []TransactionAttributes
 	for {
 
 		// get response.
-		var resp ListTransactionsResponse
-		if _, err := c.sender(cr, &resp); err != nil {
+		var resp TransactionPaginationWrapper
+		if _, err := c.sender(newCtx, sr, &resp); err != nil {
 			return nil, err
 		}
 
 		// extract response data.
-		transactions = append(transactions, resp.Data...)
+		for _, t := range resp.Data {
+			transactions = append(transactions, t.Attributes)
+		}
 
 		// paginate?
 		if resp.Links.Next == "" {
 			break
 		}
-		cr.path = strings.Replace(resp.Links.Next, c.endpoint, "", 1)
-		cr.queries = nil
+		sr.path = strings.Replace(resp.Links.Next, c.endpoint, "", 1)
+		sr.queries = nil
 	}
 	return transactions, nil
 }
