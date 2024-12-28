@@ -11,82 +11,150 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-type TransactionAttributes struct {
-	Status             string      `json:"status"`
-	RawText            string      `json:"rawText"`
-	Description        string      `json:"description"`
-	Message            string      `json:"message"`
-	IsCategorizable    bool        `json:"isCategorizable"`
-	HoldInfo           interface{} `json:"holdInfo"`
-	RoundUp            interface{} `json:"roundUp"`
-	Cashback           interface{} `json:"cashback"`
-	Amount             Amount      `json:"amount"`
-	ForeignAmount      interface{} `json:"foreignAmount"`
-	CardPurchaseMethod interface{} `json:"cardPurchaseMethod"`
-	SettledAt          time.Time   `json:"settledAt"`
-	CreatedAt          time.Time   `json:"createdAt"`
-	TransactionType    interface{} `json:"transactionType"`
-	Note               string      `json:"note"`
-	PerformingCustomer struct {
-		DisplayName string `json:"displayName"`
-	} `json:"performingCustomer"`
-	DeepLinkURL string `json:"deepLinkURL"`
+type TransactionStatus string
+
+const (
+	TransactionStatusHeld    TransactionStatus = "HELD"
+	TransactionStatusSettled                   = "SETTLED"
+)
+
+type CardPurchaseMethod string
+
+const (
+	CardPurchaseMethodBarCode       CardPurchaseMethod = "BAR_CODE"
+	CardPurchaseMethodOCR                              = "OCR"
+	CardPurchaseMethodCardPin                          = "CARD_PIN"
+	CardPurchaseMethodCardDetails                      = "CARD_DETAILS"
+	CardPurchaseMethodCardOnFile                       = "CARD_ON_FILE"
+	CardPurchaseMethordEcommerce                       = "ECOMMERCE"
+	CardPurchaseMethodMagneticStrip                    = "MAGNETIC_STRIP"
+	CardPurchaseMethodContactless                      = "CONTACTLESS"
+)
+
+type TransactionResourceHoldInfo struct {
+	Amount        Money `json:"amount"`
+	ForeignAmount Money `json:"foreignAmount"`
+}
+
+type TransactionResourceRoundUp struct {
+	Amount       Money `json:"amount"`
+	BoostPortion Money `json:"boostPortion"`
+}
+
+type TransactionResourceCashback struct {
+	Description string `json:"description"`
+	Amount      Money  `json:"amount"`
+}
+
+type TransactionResourceCardPurchaseMethod struct {
+	CardNumberSuffix string             `json:"cardNumberSuffix"`
+	Method           CardPurchaseMethod `json:"method"`
+}
+
+type TransactionResourceNote struct {
+	Text string `json:"text"`
+}
+
+type TransactionResourcePerformingCustomer struct {
+	DisplayName string `json:"displayName"`
+}
+
+type TransactionResource struct {
+	Status             TransactionStatus                     `json:"status"`
+	RawText            string                                `json:"rawText"`
+	Description        string                                `json:"description"`
+	Message            string                                `json:"message"`
+	IsCategorizable    bool                                  `json:"isCategorizable"`
+	HoldInfo           TransactionResourceHoldInfo           `json:"holdInfo"`
+	RoundUp            TransactionResourceRoundUp            `json:"roundUp"`
+	Cashback           TransactionResourceCashback           `json:"cashback"`
+	Amount             Money                                 `json:"amount"`
+	ForeignAmount      Money                                 `json:"foreignAmount"`
+	CardPurchaseMethod TransactionResourceCardPurchaseMethod `json:"cardPurchaseMethod"`
+	SettledAt          time.Time                             `json:"settledAt"`
+	CreatedAt          time.Time                             `json:"createdAt"`
+	TransactionType    string                                `json:"transactionType"`
+	Note               TransactionResourceNote               `json:"note"`
+	PerformingCustomer TransactionResourcePerformingCustomer `json:"performingCustomer"`
+	DeepLinkURL        string                                `json:"deepLinkURL"`
 }
 
 type TransactionRelationships struct {
-	Account struct {
-		Data struct {
-			Type string `json:"type"`
-			ID   string `json:"id"`
-		} `json:"data"`
-		Links RelatedLink `json:"links"`
-	} `json:"account"`
-	TransferAccount interface{} `json:"transferAccount"`
-	Category        interface{} `json:"category"`
-	ParentCategory  interface{} `json:"parentCategory"`
-	Tags            TagData     `json:"tags"`
-	Attachment      interface{} `json:"attachment"`
+	Account         Wrapper[Object]      `json:"account"`
+	TransferAccount Wrapper[Object]      `json:"transferAccount"`
+	Category        Wrapper[Object]      `json:"category"`
+	ParentCategory  Wrapper[Object]      `json:"parentCategory"`
+	Tags            WrapperSlice[Object] `json:"tags"`
+	Attachment      Wrapper[Object]      `json:"attachment"`
 }
 
-// TransactionData represents a transaction in Up.
-type TransactionDataWrapper Data[TransactionAttributes, TransactionRelationships]
+// Transaction represents a transaction in Up.
+type Transaction Data[TransactionResource, TransactionRelationships]
 
 // TransactionsWrapper is a pagination wrapper for a slice of TransactionData.
-type TransactionPaginationWrapper PaginationWrapper[TransactionDataWrapper]
+type TransactionWrapper WrapperSlice[Transaction]
 
-// ListTransactionsOptions defines the options for listing transactions in the
+// ListTransactionsOption defines the options for listing transactions in the
 // authed account.
-type ListTransactionsOptions struct {
+type ListTransactionsOption struct {
 	name  string
 	value string
 }
 
-func ListTransactionOptionPageSize(size int) ListTransactionsOptions {
-	return ListTransactionsOptions{
+func ListTransactionsOptionPageSize(size int) ListTransactionsOption {
+	return ListTransactionsOption{
 		name:  "page[size]",
 		value: strconv.Itoa(size),
 	}
 }
 
-func ListTransactionOptionSince(since time.Time) ListTransactionsOptions {
-	return ListTransactionsOptions{
+type FilterStatus string
+
+const (
+	FilterStatusHeld    FilterStatus = "HELD"
+	FilterStatusSettled FilterStatus = "SETTLED"
+)
+
+func ListTransactionsOptionStatus(status FilterStatus) ListTransactionsOption {
+	return ListTransactionsOption{
+		name:  "filter[status]",
+		value: string(status),
+	}
+}
+
+func ListTransactionsOptionSince(since time.Time) ListTransactionsOption {
+	return ListTransactionsOption{
 		name:  "filter[since]",
 		value: since.Format(time.RFC3339),
 	}
 }
 
-func ListTransactionOptionUntil(until time.Time) ListTransactionsOptions {
-	return ListTransactionsOptions{
+func ListTransactionsOptionUntil(until time.Time) ListTransactionsOption {
+	return ListTransactionsOption{
 		name:  "filter[until]",
 		value: until.Format(time.RFC3339),
+	}
+}
+
+func ListTransactionsOptionCategory(category string) ListTransactionsOption {
+	return ListTransactionsOption{
+		name:  "filter[category]",
+		value: category,
+	}
+}
+
+func ListTransactionsOptionTag(tag string) ListTransactionsOption {
+	return ListTransactionsOption{
+		name:  "filter[tag]",
+		value: tag,
 	}
 }
 
 // ListTransactions list all transactions for the authed account.
 // https://developer.up.com.au/#get_transactions
 func (c *Client) ListTransactions(ctx context.Context,
-	options ...ListTransactionsOptions,
-) ([]TransactionAttributes, error) {
+	options ...ListTransactionsOption,
+) (transactions []TransactionResource, err error) {
 
 	// setup tracing.
 	newCtx, span := otel.Tracer(c.tracerName).Start(ctx, "ListTransactions")
@@ -110,12 +178,11 @@ func (c *Client) ListTransactions(ctx context.Context,
 		queries: queries,
 	}
 
-	// retrieve transactions response.
-	var transactions []TransactionAttributes
+	// retrieve transactions.
 	for {
 
 		// get response.
-		var resp TransactionPaginationWrapper
+		var resp TransactionWrapper
 		if _, err := c.sender(newCtx, sr, &resp); err != nil {
 			return nil, err
 		}
@@ -129,6 +196,7 @@ func (c *Client) ListTransactions(ctx context.Context,
 		if resp.Links.Next == "" {
 			break
 		}
+		c.logger.Debug(resp.Links.Next)
 		sr.path = strings.Replace(resp.Links.Next, c.endpoint, "", 1)
 		sr.queries = nil
 	}

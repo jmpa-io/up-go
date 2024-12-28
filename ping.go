@@ -9,10 +9,13 @@ import (
 
 // Ping represents a ping event sent from the API.
 type Ping struct {
-	Meta struct {
-		Id          string `json:"id"`
-		StatusEmoji string `json:"statusEmoji"`
-	} `json:"meta"`
+	Meta PingMeta `json:"meta"`
+}
+
+// PingMeta wraps the actual important values in the Ping response from the API.
+type PingMeta struct {
+	ID          string `json:"id"`
+	StatusEmoji string `json:"statusEmoji"`
 }
 
 // Ping makes a ping request to the API.

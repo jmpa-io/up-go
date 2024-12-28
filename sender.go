@@ -21,16 +21,20 @@ type senderRequest struct {
 	queries url.Values
 }
 
+type apiErrorResponseErrorSource struct {
+	Parameter string `json:"parameter"`
+}
+
+type apiErrorResponseError struct {
+	Status string                      `json:"status"`
+	Title  string                      `json:"title"`
+	Detail string                      `json:"detail"`
+	Source apiErrorResponseErrorSource `json:"source"`
+}
+
 // apiErrorResponse represents one or more errors returned from the API.
 type apiErrorResponse struct {
-	Errors []struct {
-		Status string `json:"status"`
-		Title  string `json:"title"`
-		Detail string `json:"detail"`
-		Source struct {
-			Parameter string `json:"parameter"`
-		} `json:"source"`
-	} `json:"errors"`
+	Errors []apiErrorResponseError `json:"errors"`
 }
 
 // sender sends the given senderRequest to the API endpoint.
