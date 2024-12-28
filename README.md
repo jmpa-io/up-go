@@ -3,7 +3,7 @@
 [![up-go](https://github.com/jmpa-io/up-go/actions/workflows/README.yml/badge.svg)](https://github.com/jmpa-io/up-go/actions/workflows/README.yml)
 
 <p align="center">
-  <img src="img/logo.png"/>
+  <img src="docs/logo.png"/>
 </p>
 
 # `up-go`
