@@ -10,7 +10,7 @@
 
 ```diff
 + 📚 A Go abstraction over the Up Bank API: https://developer.up.com.au/docs.
-```
 
-export UP_TOKEN=$(aws ssm get-parameter --name /tokens/up --with-decryption | jq -r '.Parameter.Value')
+! This is a WORK-IN-PROGRESS. Use at your own risk!
+```
 
