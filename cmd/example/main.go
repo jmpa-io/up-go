@@ -38,12 +38,34 @@ func main() {
 		fmt.Printf("failed to list accounts: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("%s\n", accounts)
+	for i, a := range accounts {
+		fmt.Printf(
+			"%v. %s, %s, %s, %v\n",
+			i,
+			a.DisplayName,
+			a.OwnershipType,
+			a.Balance.CurrencyCode,
+			a.Balance.Value,
+		)
+	}
 
 	// list transactions.
 	transactions, err := c.ListTransactions(ctx)
 	if err != nil {
 		fmt.Printf("failed to list transactions: %v\n", err)
 	}
-	fmt.Printf("%s\n", transactions)
+	for i, t := range transactions {
+		fmt.Printf(
+			"%v. %s, %s, %s, %s, %s, %v, %s, %v\n",
+			i,
+			t.CreatedAt,
+			t.SettledAt,
+			t.Status,
+			t.Amount.CurrencyCode,
+			t.CardPurchaseMethod.Method,
+			t.Amount.Value,
+			t.RawText,
+			t.RoundUp.Amount.Value,
+		)
+	}
 }
