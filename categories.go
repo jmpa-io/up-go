@@ -9,11 +9,11 @@ type CategoryRelationships struct {
 	} `json:"parent"`
 	Child struct {
 	} `json:"child"`
-	Link RelatedLink `json:"links"`
+	Links Links `json:"links"`
 }
 
-// CategoryDataWrapper represents a category in Up.
-type CategoryDataWrapper Data[CategoryAttributes, CategoryRelationships]
+// Category represents a category in Up.
+type Category Data[CategoryAttributes, CategoryRelationships]
 
 // CategoryPaginationWrapper is a pagination wrapper for a slice of CategoryData
-type CategoryPagenationWrapper PaginationWrapper[CategoryDataWrapper]
+type CategoryWrapper WrapperSlice[Category]

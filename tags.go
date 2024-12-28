@@ -8,19 +8,13 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-// TagsWrapper is a wrapper for a slice of TagData.
-type TagsSelfWrapper SelfWrapper[TagData]
-
-// TagData represents a tag in Up.
-type TagData struct {
-	Type string `json:"type"`
-	ID   string `json:"id"`
-}
+// Tags represents tags in Up
+type Tags WrapperSlice[Object]
 
 // wrapTags wraps the given tags in the data wrapper, ready to be sent to the API.
-func wrapTags(tags []string) (wrappedTags DataWrapper[[]TagData]) {
+func wrapTags(tags []string) (wrappedTags Tags) {
 	for _, t := range tags {
-		wrappedTags.Data = append(wrappedTags.Data, TagData{Type: "tags", ID: t})
+		wrappedTags.Data = append(wrappedTags.Data, Object{Type: "tags", ID: t})
 	}
 	return wrappedTags
 }
