@@ -5,15 +5,7 @@ import "log/slog"
 // Option configures a departure client.
 type Option func(*Client) error
 
-// WithLogger overwrites the default logger in this client with a given custom logger.
-func WithLogger(logger *slog.Logger) Option {
-	return func(c *Client) error {
-		c.logger = logger
-		return nil
-	}
-}
-
-// WithLogLevel configures the log level for the default logger in this client.
+// WithLogLevel sets the log level for the default logger.
 func WithLogLevel(level slog.Level) Option {
 	return func(c *Client) error {
 		c.logLevel = level
@@ -21,11 +13,26 @@ func WithLogLevel(level slog.Level) Option {
 	}
 }
 
-// WithHttpClient overirdes the default httpClient used when sending /
-// receieving data from the endpoint.
+// WithLogger overwrites the default logger with the given custom logger.
+func WithLogger(logger *slog.Logger) Option {
+	return func(c *Client) error {
+		c.logger = logger
+		return nil
+	}
+}
+
+// WithHttpClient overwrites the default httpClient used for API communication.
 func WithHttpClient(httpClient iHttpClient) Option {
 	return func(c *Client) error {
 		c.httpClient = httpClient
+		return nil
+	}
+}
+
+// WithEndpoint sets a custom endpoint for API communication.
+func WithEndpoint(endpoint string) Option {
+	return func(c *Client) error {
+		c.endpoint = endpoint
 		return nil
 	}
 }

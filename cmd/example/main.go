@@ -11,6 +11,7 @@ import (
 
 func main() {
 
+	// setup tracing.
 	ctx := context.TODO()
 
 	// retrieve token.
@@ -23,12 +24,26 @@ func main() {
 		os.Exit(1)
 	}
 
-	// do something with the client..
-	// like send a ping to the api to check if the token is valid.
+	// send a ping to the API to check if the token is valid.
 	p, err := c.Ping(ctx)
 	if err != nil {
 		fmt.Printf("failed to ping: %v\n", err)
 		os.Exit(1)
 	}
 	fmt.Printf("%s\n", p.Meta.StatusEmoji)
+
+	// list accounts.
+	accounts, err := c.ListAccounts(ctx)
+	if err != nil {
+		fmt.Printf("failed to list accounts: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("%s\n", accounts)
+
+	// list transactions.
+	transactions, err := c.ListTransactions(ctx)
+	if err != nil {
+		fmt.Printf("failed to list transactions: %v\n", err)
+	}
+	fmt.Printf("%s\n", transactions)
 }

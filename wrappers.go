@@ -1,15 +1,15 @@
 package up
 
-type DataWrapper[T any] struct {
-	Data T `json:"data"`
+type Wrapper[T any] struct {
+	Data  T     `json:"data"`
+	Links Links `json:"links"`
 }
 
-type SelfWrapper[T any] struct {
-	Data  []T      `json:"data"`
-	Links SelfLink `json:"links"`
+type WrapperSlice[T any] struct {
+	Data  []T   `json:"data"`
+	Links Links `json:"links"`
 }
 
-type PaginationWrapper[T any] struct {
-	Data  []T            `json:"data"`
-	Links PaginationLink `json:"links"`
+type WrapperOnlyLinks struct {
+	Links Links `json:"links"`
 }
