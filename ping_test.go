@@ -1,60 +1,52 @@
 package up
 
 import (
+	"bytes"
 	"context"
-	"encoding/json"
+	"io"
 	"net/http"
-	"net/http/httptest"
 	"reflect"
 	"strings"
 	"testing"
 )
 
+var (
+	pingTestdata         = NewTestdata("ping")
+	unauthorizedTestdata = NewTestdata("unauthorized")
+)
+
 func Test_Ping(t *testing.T) {
 	tests := map[string]struct {
-		server   *httptest.Server
-		testdata string
-		want     *Ping
-		err      string
+		mock *MockRoundTripper
+		want *Ping
+		err  string
 	}{
 		"successful ping": {
-			server: httptest.NewUnstartedServer(
-				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					out := Ping{
-						Meta: PingMeta{
-							ID:          "14101d6e-03ee-4623-849c-c320e0764649",
-							StatusEmoji: "⚡️",
-						},
+			mock: &MockRoundTripper{
+				MockFunc: func(req *http.Request) *http.Response {
+					return &http.Response{
+						StatusCode: http.StatusOK,
+						Body:       io.NopCloser(bytes.NewBuffer(pingTestdata.content)),
 					}
-					b, _ := json.Marshal(out)
-					w.WriteHeader(http.StatusOK)
-					w.Write(b)
-				}),
-			),
-			testdata: "testdata/ping.json",
+				},
+			},
+			want: &Ping{
+				Meta: PingMeta{
+					ID:          "14101d6e-03ee-4623-849c-c320e0764649",
+					StatusEmoji: "⚡️",
+				},
+			},
 		},
 		"unauthorized ping": {
-			server: httptest.NewUnstartedServer(
-				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					out := apiErrorResponse{
-						Errors: []apiErrorResponseError{
-							{
-								Status: "TODO",
-								Title:  "TODO",
-								Detail: "TODO",
-								Source: apiErrorResponseErrorSource{
-									Parameter: "TODO",
-								},
-							},
-						},
+			mock: &MockRoundTripper{
+				MockFunc: func(req *http.Request) *http.Response {
+					return &http.Response{
+						StatusCode: http.StatusUnauthorized,
+						Body:       io.NopCloser(bytes.NewBuffer(unauthorizedTestdata.content)),
 					}
-					b, _ := json.Marshal(out)
-					w.WriteHeader(http.StatusUnauthorized)
-					w.Write(b)
-				}),
-			),
-			testdata: "testdata/unauthorized.json",
-			err:      "error response returned from API",
+				},
+			},
+			err: "error response returned from API",
 		},
 	}
 	for name, tt := range tests {
@@ -62,19 +54,11 @@ func Test_Ping(t *testing.T) {
 		// tracing context.
 		ctx := context.Background()
 
-		// start test server.
-		tt.server.Start()
-		defer tt.server.Close()
-
-		// read + parse testdata.
-		if err := readTestdata(tt.testdata, &tt.want); err != nil {
-			panic(err)
-		}
-
 		// setup client with test server.
 		c, _ := New(ctx, "xxxx",
-			WithHttpClient(tt.server.Client()),
-			WithEndpoint(tt.server.URL),
+			WithHttpClient(&http.Client{
+				Transport: tt.mock,
+			}),
 		)
 
 		// run tests.
@@ -82,19 +66,19 @@ func Test_Ping(t *testing.T) {
 			got, err := c.Ping(context.Background())
 			if tt.err != "" && err != nil {
 				if !strings.Contains(err.Error(), tt.err) {
-					t.Errorf("New() returned an unexpected error; want=%v, got=%v", tt.err, err)
+					t.Errorf("Ping() returned an unexpected error;\nwant=%v\ngot=%v\n", tt.err, err)
 				}
 				return
 			}
 			if err != nil {
-				t.Errorf("New() returned an error; error=%v", err)
+				t.Errorf("Ping() returned an error;\nerror=%v\n", err)
 				return
 			}
 			switch {
 			case
 				!reflect.DeepEqual(got, tt.want):
 				t.Errorf(
-					"New() returned unexpected configuration; want=%+v, got=%+v\n",
+					"Ping() returned unexpected configuration;\nwant=%+v\ngot=%+v\n",
 					tt.want,
 					got,
 				)
