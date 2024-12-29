@@ -9,8 +9,8 @@
         "ownershipType": "INDIVIDUAL",
         "balance": {
           "currencyCode": "AUD",
-          "value": "1.00",
-          "valueInBaseUnits": 100
+          "value": "100.00",
+          "valueInBaseUnits": 10000
         },
         "createdAt": "2024-11-06T14:26:50+11:00"
       },
@@ -27,7 +27,7 @@
     }
   ],
   "links": {
-    "prev": null,
-    "next": "https://api.up.com.au/api/v1/accounts?page%5Bafter%5D=WyIyMDI0LTExLTA2VDAzOjI2OjUwLjE3MjA3ODAwMFoiLCI0ZWQxZDk5Yy1jZTEwLTRiNTQtOTUyZi0wNTE1MWMyYWI0MjMiXQ%3D%3D&page%5Bsize%5D=1"
+    "prev": "---1",
+    "next": "---3"
   }
 }
