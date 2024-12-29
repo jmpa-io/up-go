@@ -6,43 +6,12 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 
 	"go.opentelemetry.io/otel"
 )
 
-type AccountType string
-
-const (
-	AccountTypeSaver         AccountType = "SAVER"
-	AccountTypeTransactional             = "TRANSACTIONAL"
-	AccountTypeHomeLoan                  = "HOME_LOAN"
-)
-
-type OwnershipType string
-
-const (
-	OwnershipTypeIndividual OwnershipType = "INDIVIDUAL"
-	OwnershipTypeJoint                    = "JOINT"
-)
-
-type AccountResource struct {
-	DisplayName   string      `json:"displayName"`
-	AccountType   AccountType `json:"accountType"`
-	OwnershipType string      `json:"ownershipType"`
-	Balance       Money       `json:"balance"`
-	CreatedAt     time.Time   `json:"createdAt"`
-}
-
-type AccountRelationships struct {
-	Transactions WrapperOnlyLinks `json:"transactions"`
-}
-
-// Account represents an account in Up.
-type Account Data[AccountResource, AccountRelationships]
-
-// AccountPaginationWrapper a pagination wrapper for a slice of AccountDataWrapper.
-type AccountWrapper WrapperSlice[Account]
+// AccountsPaginationWrapper a pagination wrapper for a slice of AccountDataWrapper.
+type AccountsPaginationWrapper WrapperSlice[Account]
 
 type ListAccountsOption struct {
 	name  string
@@ -102,7 +71,7 @@ func (c *Client) ListAccounts(ctx context.Context,
 	for {
 
 		// get response.
-		var resp AccountWrapper
+		var resp AccountsPaginationWrapper
 		if _, err := c.sender(newCtx, sr, &resp); err != nil {
 			return nil, err
 		}

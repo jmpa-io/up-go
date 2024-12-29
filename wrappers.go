@@ -10,6 +10,7 @@ type WrapperSlice[T any] struct {
 	Links Links `json:"links"`
 }
 
-type WrapperOnlyLinks struct {
-	Links Links `json:"links"`
+type WrapperOmittable struct {
+	Data  interface{} `json:"data,omitempty"`
+	Links Links       `json:"links,omitempty"`
 }

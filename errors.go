@@ -1,8 +1,6 @@
 package up
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // ErrFailedMarshal is returned when an error is returned from json.Marshal.
 type ErrFailedMarshal struct {
