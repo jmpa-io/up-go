@@ -1,0 +1,77 @@
+{
+  "data": [
+    {
+      "type": "transactions",
+      "id": "b015b19b-32f0-41e0-9817-d5fb22fd259e",
+      "attributes": {
+        "status": "SETTLED",
+        "rawText": null,
+        "description": "David Taylor",
+        "message": "Money for the pizzas last night.",
+        "isCategorizable": true,
+        "holdInfo": null,
+        "roundUp": null,
+        "cashback": null,
+        "amount": {
+          "currencyCode": "AUD",
+          "value": "-59.98",
+          "valueInBaseUnits": -5998
+        },
+        "foreignAmount": null,
+        "cardPurchaseMethod": null,
+        "settledAt": "2024-11-05T07:25:12+11:00",
+        "createdAt": "2024-11-05T07:25:12+11:00",
+        "transactionType": null,
+        "note": null,
+        "performingCustomer": {
+          "displayName": "Bobby"
+        },
+        "deepLinkURL": "up://transaction/VHJhbnNhY3Rpb24tMzg="
+      },
+      "relationships": {
+        "account": {
+          "data": {
+            "type": "accounts",
+            "id": "420e0a2d-1e5e-4278-a194-219d3fb5c575"
+          },
+          "links": {
+            "related": "https://api.up.com.au/api/v1/accounts/420e0a2d-1e5e-4278-a194-219d3fb5c575"
+          }
+        },
+        "transferAccount": {
+          "data": null
+        },
+        "category": {
+          "data": null,
+          "links": {
+            "self": "https://api.up.com.au/api/v1/transactions/b015b19b-32f0-41e0-9817-d5fb22fd259e/relationships/category"
+          }
+        },
+        "parentCategory": {
+          "data": null
+        },
+        "tags": {
+          "data": [
+            {
+              "type": "tags",
+              "id": "Pizza Night"
+            }
+          ],
+          "links": {
+            "self": "https://api.up.com.au/api/v1/transactions/b015b19b-32f0-41e0-9817-d5fb22fd259e/relationships/tags"
+          }
+        },
+        "attachment": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://api.up.com.au/api/v1/transactions/b015b19b-32f0-41e0-9817-d5fb22fd259e"
+      }
+    }
+  ],
+  "links": {
+    "prev": "---2",
+    "next": null
+  }
+}

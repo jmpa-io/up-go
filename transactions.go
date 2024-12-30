@@ -11,101 +11,13 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-type TransactionStatus string
-
-const (
-	TransactionStatusHeld    TransactionStatus = "HELD"
-	TransactionStatusSettled                   = "SETTLED"
-)
-
-type CardPurchaseMethod string
-
-const (
-	CardPurchaseMethodBarCode       CardPurchaseMethod = "BAR_CODE"
-	CardPurchaseMethodOCR                              = "OCR"
-	CardPurchaseMethodCardPin                          = "CARD_PIN"
-	CardPurchaseMethodCardDetails                      = "CARD_DETAILS"
-	CardPurchaseMethodCardOnFile                       = "CARD_ON_FILE"
-	CardPurchaseMethordEcommerce                       = "ECOMMERCE"
-	CardPurchaseMethodMagneticStrip                    = "MAGNETIC_STRIP"
-	CardPurchaseMethodContactless                      = "CONTACTLESS"
-)
-
-type TransactionResourceHoldInfo struct {
-	Amount        Money `json:"amount"`
-	ForeignAmount Money `json:"foreignAmount"`
-}
-
-type TransactionResourceRoundUp struct {
-	Amount       Money `json:"amount"`
-	BoostPortion Money `json:"boostPortion"`
-}
-
-type TransactionResourceCashback struct {
-	Description string `json:"description"`
-	Amount      Money  `json:"amount"`
-}
-
-type TransactionResourceCardPurchaseMethod struct {
-	CardNumberSuffix string             `json:"cardNumberSuffix"`
-	Method           CardPurchaseMethod `json:"method"`
-}
-
-type TransactionResourceNote struct {
-	Text string `json:"text"`
-}
-
-type TransactionResourcePerformingCustomer struct {
-	DisplayName string `json:"displayName"`
-}
-
-type TransactionResource struct {
-	Status             TransactionStatus                     `json:"status"`
-	RawText            string                                `json:"rawText"`
-	Description        string                                `json:"description"`
-	Message            string                                `json:"message"`
-	IsCategorizable    bool                                  `json:"isCategorizable"`
-	HoldInfo           TransactionResourceHoldInfo           `json:"holdInfo"`
-	RoundUp            TransactionResourceRoundUp            `json:"roundUp"`
-	Cashback           TransactionResourceCashback           `json:"cashback"`
-	Amount             Money                                 `json:"amount"`
-	ForeignAmount      Money                                 `json:"foreignAmount"`
-	CardPurchaseMethod TransactionResourceCardPurchaseMethod `json:"cardPurchaseMethod"`
-	SettledAt          time.Time                             `json:"settledAt"`
-	CreatedAt          time.Time                             `json:"createdAt"`
-	TransactionType    string                                `json:"transactionType"`
-	Note               TransactionResourceNote               `json:"note"`
-	PerformingCustomer TransactionResourcePerformingCustomer `json:"performingCustomer"`
-	DeepLinkURL        string                                `json:"deepLinkURL"`
-}
-
-type TransactionRelationships struct {
-	Account         Wrapper[Object]      `json:"account"`
-	TransferAccount Wrapper[Object]      `json:"transferAccount"`
-	Category        Wrapper[Object]      `json:"category"`
-	ParentCategory  Wrapper[Object]      `json:"parentCategory"`
-	Tags            WrapperSlice[Object] `json:"tags"`
-	Attachment      Wrapper[Object]      `json:"attachment"`
-}
-
-// Transaction represents a transaction in Up.
-type Transaction Data[TransactionResource, TransactionRelationships]
-
 // TransactionsWrapper is a pagination wrapper for a slice of TransactionData.
 type TransactionWrapper WrapperSlice[Transaction]
 
 // ListTransactionsOption defines the options for listing transactions in the
 // authed account.
 type ListTransactionsOption struct {
-	name  string
-	value string
-}
-
-func ListTransactionsOptionPageSize(size int) ListTransactionsOption {
-	return ListTransactionsOption{
-		name:  "page[size]",
-		value: strconv.Itoa(size),
-	}
+	ListOption
 }
 
 type FilterStatus string
@@ -115,39 +27,28 @@ const (
 	FilterStatusSettled FilterStatus = "SETTLED"
 )
 
+func ListTransactionsOptionPageSize(size int) ListTransactionsOption {
+	return ListTransactionsOption{NewListOption("page[size]", strconv.Itoa(size))}
+}
+
 func ListTransactionsOptionStatus(status FilterStatus) ListTransactionsOption {
-	return ListTransactionsOption{
-		name:  "filter[status]",
-		value: string(status),
-	}
+	return ListTransactionsOption{NewListOption("filter[status]", string(status))}
 }
 
 func ListTransactionsOptionSince(since time.Time) ListTransactionsOption {
-	return ListTransactionsOption{
-		name:  "filter[since]",
-		value: since.Format(time.RFC3339),
-	}
+	return ListTransactionsOption{NewListOption("filter[since]", since.Format(time.RFC3339))}
 }
 
 func ListTransactionsOptionUntil(until time.Time) ListTransactionsOption {
-	return ListTransactionsOption{
-		name:  "filter[until]",
-		value: until.Format(time.RFC3339),
-	}
+	return ListTransactionsOption{NewListOption("filter[until]", until.Format(time.RFC3339))}
 }
 
 func ListTransactionsOptionCategory(category string) ListTransactionsOption {
-	return ListTransactionsOption{
-		name:  "filter[category]",
-		value: category,
-	}
+	return ListTransactionsOption{NewListOption("filter[category]", category)}
 }
 
 func ListTransactionsOptionTag(tag string) ListTransactionsOption {
-	return ListTransactionsOption{
-		name:  "filter[tag]",
-		value: tag,
-	}
+	return ListTransactionsOption{NewListOption("filter[tag]", tag)}
 }
 
 // ListTransactions list all transactions for the authed account.

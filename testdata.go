@@ -1,6 +1,9 @@
 package up
 
-import "os"
+import (
+	"os"
+	"time"
+)
 
 type testdata struct {
 	path    string
@@ -12,10 +15,13 @@ func (t *testdata) getContent() {
 	t.content = b
 }
 
-func NewTestdata(fileName string) *testdata {
+func newTestdata(fileName string) *testdata {
 	td := &testdata{
 		path: "./testdata/" + fileName + ".json",
 	}
 	td.getContent()
 	return td
 }
+
+// a location used for tests.
+var location = time.FixedZone("AEST", 11*60*60)
