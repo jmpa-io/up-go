@@ -4,13 +4,9 @@ ifndef PROJECT
 PROJECT=up-go
 endif
 
-# Services.
-SERVICES =
-# TODO: fill these out with services to deploy.
-
 # Targets.
-# TODO: fill these out with Make targets.
 example: binary-go-example ## Build the example binary.
+run: build-go-example ## Builds & runs the example binary.
 
 ---: ## ---
 
