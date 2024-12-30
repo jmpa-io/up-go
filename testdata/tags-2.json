@@ -1,0 +1,30 @@
+{
+  "data": [
+    {
+      "type": "tags",
+      "id": "Holiday",
+      "relationships": {
+        "transactions": {
+          "links": {
+            "related": "https://api.up.com.au/api/v1/transactions?filter%5Btag%5D=Holiday"
+          }
+        }
+      }
+    },
+    {
+      "type": "tags",
+      "id": "Pizza Night",
+      "relationships": {
+        "transactions": {
+          "links": {
+            "related": "https://api.up.com.au/api/v1/transactions?filter%5Btag%5D=Pizza+Night"
+          }
+        }
+      }
+    }
+  ],
+  "links": {
+    "prev": "---1",
+    "next": "---3"
+  }
+}

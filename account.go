@@ -12,19 +12,19 @@ const (
 	AccountTypeHomeLoan                  = "HOME_LOAN"
 )
 
-type OwnershipType string
+type AccountOwnershipType string
 
 const (
-	OwnershipTypeIndividual OwnershipType = "INDIVIDUAL"
-	OwnershipTypeJoint                    = "JOINT"
+	AccountOwnershipTypeIndividual AccountOwnershipType = "INDIVIDUAL"
+	AccountOwnershipTypeJoint                           = "JOINT"
 )
 
 type AccountResource struct {
-	DisplayName   string      `json:"displayName"`
-	AccountType   AccountType `json:"accountType"`
-	OwnershipType string      `json:"ownershipType"`
-	Balance       Money       `json:"balance"`
-	CreatedAt     time.Time   `json:"createdAt"`
+	DisplayName   string               `json:"displayName"`
+	AccountType   AccountType          `json:"accountType"`
+	OwnershipType AccountOwnershipType `json:"ownershipType"`
+	Balance       Money                `json:"balance"`
+	CreatedAt     time.Time            `json:"createdAt"`
 }
 
 type AccountRelationships struct {

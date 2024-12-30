@@ -11,21 +11,19 @@ import (
 )
 
 var (
-	accountsTestdata1 = NewTestdata("accounts-1")
-	accountsTestdata2 = NewTestdata("accounts-2")
-	accountsTestdata3 = NewTestdata("accounts-3")
+	accountsTestdata1 = newTestdata("accounts-1")
+	accountsTestdata2 = newTestdata("accounts-2")
+	accountsTestdata3 = newTestdata("accounts-3")
 )
-
-var location = time.FixedZone("AEST", 11*60*60)
 
 func Test_GetAccounts(t *testing.T) {
 	tests := map[string]struct {
-		mock *MockRoundTripper
+		mock *mockRoundTripper
 		want []AccountResource
 		err  string
 	}{
 		"read accounts": {
-			mock: &MockRoundTripper{
+			mock: &mockRoundTripper{
 				MockFunc: func(req *http.Request) *http.Response {
 					var b []byte
 					switch {
@@ -47,7 +45,7 @@ func Test_GetAccounts(t *testing.T) {
 				{
 					DisplayName:   "Spending",
 					AccountType:   AccountTypeTransactional,
-					OwnershipType: string(OwnershipTypeIndividual),
+					OwnershipType: AccountOwnershipTypeIndividual,
 					Balance: Money{
 						CurrencyCode:     "AUD",
 						Value:            "1.00",
@@ -58,7 +56,7 @@ func Test_GetAccounts(t *testing.T) {
 				{
 					DisplayName:   "Spending",
 					AccountType:   AccountTypeTransactional,
-					OwnershipType: string(OwnershipTypeIndividual),
+					OwnershipType: AccountOwnershipTypeIndividual,
 					Balance: Money{
 						CurrencyCode:     "AUD",
 						Value:            "100.00",
@@ -69,7 +67,7 @@ func Test_GetAccounts(t *testing.T) {
 				{
 					DisplayName:   "Spending",
 					AccountType:   AccountTypeTransactional,
-					OwnershipType: string(OwnershipTypeIndividual),
+					OwnershipType: AccountOwnershipTypeIndividual,
 					Balance: Money{
 						CurrencyCode:     "AUD",
 						Value:            "100.00",
@@ -85,7 +83,7 @@ func Test_GetAccounts(t *testing.T) {
 		// tracing context.
 		ctx := context.Background()
 
-		// setup client with test server.
+		// setup client with mock.
 		c, _ := New(ctx, "xxxx",
 			WithHttpClient(&http.Client{
 				Transport: tt.mock,
@@ -94,7 +92,9 @@ func Test_GetAccounts(t *testing.T) {
 
 		// run tests.
 		t.Run(name, func(t *testing.T) {
-			got, err := c.ListAccounts(context.Background())
+			got, err := c.ListAccounts(ctx)
+
+			// any errors?
 			if tt.err != "" && err != nil {
 				if !strings.Contains(err.Error(), tt.err) {
 					t.Errorf(
@@ -110,32 +110,29 @@ func Test_GetAccounts(t *testing.T) {
 				return
 			}
 
-			// determine matches.
-			matches := make(map[int]bool)
+			// do the lengths match?
+			if len(got) != len(tt.want) {
+				t.Errorf(
+					"ListAccounts() returned unexpected number of results;\nwant=%d\ngot=%d\n",
+					len(tt.want),
+					len(got),
+				)
+				return
+			}
+
+			// is there a mismatch from what we're expecting vs what we've got?
+			var foundErrs bool
 			for i := 0; i < len(got); i++ {
 				g := got[i]
-				w := tt.want[i] // TODO: could be an issue here with slice length.
-				switch {
-				case
-					g.DisplayName == w.DisplayName,
-					g.AccountType == w.AccountType,
-					g.OwnershipType == w.OwnershipType,
-					g.Balance == w.Balance,
-					g.CreatedAt.Equal(w.CreatedAt):
-					matches[i] = true
-					continue
+				w := tt.want[i]
+				if g.DisplayName != w.DisplayName ||
+					g.AccountType != w.AccountType ||
+					g.OwnershipType != w.OwnershipType ||
+					g.Balance != w.Balance ||
+					!g.CreatedAt.Equal(w.CreatedAt) {
+					t.Errorf("mismatch at index %d;\nwant=%+v\ngot=%+v\n", i, w, g)
+					foundErrs = true
 				}
-			}
-			var foundErrs bool
-			for _, m := range matches {
-
-				// skip passes!
-				if m {
-					continue
-				}
-
-				// fail on errors.
-				foundErrs = true
 			}
 			if foundErrs {
 				t.Errorf(

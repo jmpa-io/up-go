@@ -11,18 +11,18 @@ import (
 )
 
 var (
-	pingTestdata         = NewTestdata("ping")
-	unauthorizedTestdata = NewTestdata("unauthorized")
+	pingTestdata         = newTestdata("ping")
+	unauthorizedTestdata = newTestdata("unauthorized")
 )
 
 func Test_Ping(t *testing.T) {
 	tests := map[string]struct {
-		mock *MockRoundTripper
+		mock *mockRoundTripper
 		want *Ping
 		err  string
 	}{
 		"successful ping": {
-			mock: &MockRoundTripper{
+			mock: &mockRoundTripper{
 				MockFunc: func(req *http.Request) *http.Response {
 					return &http.Response{
 						StatusCode: http.StatusOK,
@@ -38,7 +38,7 @@ func Test_Ping(t *testing.T) {
 			},
 		},
 		"unauthorized ping": {
-			mock: &MockRoundTripper{
+			mock: &mockRoundTripper{
 				MockFunc: func(req *http.Request) *http.Response {
 					return &http.Response{
 						StatusCode: http.StatusUnauthorized,
@@ -63,7 +63,9 @@ func Test_Ping(t *testing.T) {
 
 		// run tests.
 		t.Run(name, func(t *testing.T) {
-			got, err := c.Ping(context.Background())
+			got, err := c.Ping(ctx)
+
+			// any errors?
 			if tt.err != "" && err != nil {
 				if !strings.Contains(err.Error(), tt.err) {
 					t.Errorf("Ping() returned an unexpected error;\nwant=%v\ngot=%v\n", tt.err, err)
@@ -74,6 +76,8 @@ func Test_Ping(t *testing.T) {
 				t.Errorf("Ping() returned an error;\nerror=%v\n", err)
 				return
 			}
+
+			// is there a mismatch from what we're expecting vs what we've got?
 			switch {
 			case
 				!reflect.DeepEqual(got, tt.want):
