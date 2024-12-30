@@ -8,13 +8,18 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-// Tags represents tags in Up
-type Tags WrapperSlice[Object]
+// Tag represents a tag in Up.
+type Tag struct {
+	Object
+}
+
+// Tags represents tags in Up.
+type Tags WrapperSlice[Tag]
 
 // wrapTags wraps the given tags in the data wrapper, ready to be sent to the API.
 func wrapTags(tags []string) (wrappedTags Tags) {
 	for _, t := range tags {
-		wrappedTags.Data = append(wrappedTags.Data, Object{Type: "tags", ID: t})
+		wrappedTags.Data = append(wrappedTags.Data, Tag{Object: Object{Type: "tags", ID: t}})
 	}
 	return wrappedTags
 }

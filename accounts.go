@@ -14,34 +14,25 @@ import (
 type AccountsPaginationWrapper WrapperSlice[Account]
 
 type ListAccountsOption struct {
-	name  string
-	value string
+	ListOption
 }
 
 func ListAccountsOptionPageSize(size int) ListAccountsOption {
-	return ListAccountsOption{
-		name:  "page[size]",
-		value: strconv.Itoa(size),
-	}
+	return ListAccountsOption{NewListOption("page[size]", strconv.Itoa(size))}
 }
 
 func ListAccountsOptionFilterAccountType(t AccountType) ListAccountsOption {
-	return ListAccountsOption{
-		name:  "filter[accountType]",
-		value: string(t),
-	}
+	return ListAccountsOption{NewListOption("filter[accountType]", string(t))}
 }
 
-func ListAccountsOptionFilterOwnershipType(t OwnershipType) ListAccountsOption {
-	return ListAccountsOption{
-		name:  "filter[ownershipType]",
-		value: string(t),
-	}
+func ListAccountsOptionFilterAccountOwnershipType(t AccountOwnershipType) ListAccountsOption {
+	return ListAccountsOption{NewListOption("filter[ownershipType]", string(t))}
 }
 
-// ListAccounts list all accounts for the authed account.
+// ListAccounts list ALL accounts for the authed user.
 // https://developer.up.com.au/#get_accounts.
-func (c *Client) ListAccounts(ctx context.Context,
+func (c *Client) ListAccounts(
+	ctx context.Context,
 	options ...ListAccountsOption,
 ) (accounts []AccountResource, err error) {
 
