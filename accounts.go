@@ -33,7 +33,7 @@ func ListAccountsOptionFilterAccountOwnershipType(t AccountOwnershipType) ListAc
 // https://developer.up.com.au/#get_accounts.
 func (c *Client) ListAccounts(
 	ctx context.Context,
-	options ...ListAccountsOption,
+	opts ...ListAccountsOption,
 ) (accounts []AccountResource, err error) {
 
 	// setup tracing.
@@ -42,7 +42,7 @@ func (c *Client) ListAccounts(
 
 	// setup queries.
 	queries := make(url.Values)
-	for _, o := range options {
+	for _, o := range opts {
 		queries[o.name] = []string{o.value}
 	}
 

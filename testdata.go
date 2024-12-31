@@ -11,7 +11,10 @@ type testdata struct {
 }
 
 func (t *testdata) getContent() {
-	b, _ := os.ReadFile(t.path)
+	b, err := os.ReadFile(t.path)
+	if err != nil {
+		panic(err)
+	}
 	t.content = b
 }
 

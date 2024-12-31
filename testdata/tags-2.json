@@ -2,29 +2,29 @@
   "data": [
     {
       "type": "tags",
-      "id": "Holiday",
+      "id": "Dining Out",
       "relationships": {
         "transactions": {
           "links": {
-            "related": "https://api.up.com.au/api/v1/transactions?filter%5Btag%5D=Holiday"
+            "related": "https://api.up.com.au/api/v1/transactions?filter%5Btag%5D=Dining+Out"
           }
         }
       }
     },
     {
       "type": "tags",
-      "id": "Pizza Night",
+      "id": "Shopping",
       "relationships": {
         "transactions": {
           "links": {
-            "related": "https://api.up.com.au/api/v1/transactions?filter%5Btag%5D=Pizza+Night"
+            "related": "https://api.up.com.au/api/v1/transactions?filter%5Btag%5D=Shopping"
           }
         }
       }
     }
   ],
   "links": {
-    "prev": "---1",
-    "next": "---3"
+    "prev": "https://api.up.com.au/api/v1/tags?page%5Bafter%5D=---1",
+    "next": "https://api.up.com.au/api/v1/tags?page%5Bafter%5D=---3"
   }
 }

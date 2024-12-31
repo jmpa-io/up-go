@@ -2,40 +2,42 @@
   "data": [
     {
       "type": "transactions",
-      "id": "b015b19b-32f0-41e0-9817-d5fb22fd259e",
+      "id": "c3f2d3b4-89a7-4e11-bb2b-e6f122f6b925",
       "attributes": {
-        "status": "SETTLED",
-        "rawText": null,
-        "description": "David Taylor",
-        "message": "Money for the pizzas last night.",
+        "status": "HELD",
+        "rawText": "SQ* TRAIN TICKETS",
+        "description": "John Doe",
+        "message": "Reimbursement for train tickets.",
         "isCategorizable": true,
         "holdInfo": null,
         "roundUp": null,
         "cashback": null,
         "amount": {
           "currencyCode": "AUD",
-          "value": "-59.98",
-          "valueInBaseUnits": -5998
+          "value": "-20.50",
+          "valueInBaseUnits": -2050
         },
         "foreignAmount": null,
         "cardPurchaseMethod": null,
-        "settledAt": "2024-11-05T07:25:12+11:00",
-        "createdAt": "2024-11-05T07:25:12+11:00",
+        "settledAt": null,
+        "createdAt": "2024-11-06T08:45:00+11:00",
         "transactionType": null,
-        "note": null,
-        "performingCustomer": {
-          "displayName": "Bobby"
+        "note": {
+          "text": "Travel expense"
         },
-        "deepLinkURL": "up://transaction/VHJhbnNhY3Rpb24tMzg="
+        "performingCustomer": {
+          "displayName": "John"
+        },
+        "deepLinkURL": "up://transaction/VHJhbnNhY3Rpb24tNDk="
       },
       "relationships": {
         "account": {
           "data": {
             "type": "accounts",
-            "id": "420e0a2d-1e5e-4278-a194-219d3fb5c575"
+            "id": "67df4e23-4e15-4a89-b625-cf765c21bde3"
           },
           "links": {
-            "related": "https://api.up.com.au/api/v1/accounts/420e0a2d-1e5e-4278-a194-219d3fb5c575"
+            "related": "https://api.up.com.au/api/v1/accounts/67df4e23-4e15-4a89-b625-cf765c21bde3"
           }
         },
         "transferAccount": {
@@ -44,7 +46,7 @@
         "category": {
           "data": null,
           "links": {
-            "self": "https://api.up.com.au/api/v1/transactions/b015b19b-32f0-41e0-9817-d5fb22fd259e/relationships/category"
+            "self": "https://api.up.com.au/api/v1/transactions/c3f2d3b4-89a7-4e11-bb2b-e6f122f6b925/relationships/category"
           }
         },
         "parentCategory": {
@@ -54,11 +56,11 @@
           "data": [
             {
               "type": "tags",
-              "id": "Pizza Night"
+              "id": "Travel"
             }
           ],
           "links": {
-            "self": "https://api.up.com.au/api/v1/transactions/b015b19b-32f0-41e0-9817-d5fb22fd259e/relationships/tags"
+            "self": "https://api.up.com.au/api/v1/transactions/c3f2d3b4-89a7-4e11-bb2b-e6f122f6b925/relationships/tags"
           }
         },
         "attachment": {
@@ -66,12 +68,13 @@
         }
       },
       "links": {
-        "self": "https://api.up.com.au/api/v1/transactions/b015b19b-32f0-41e0-9817-d5fb22fd259e"
+        "self": "https://api.up.com.au/api/v1/transactions/c3f2d3b4-89a7-4e11-bb2b-e6f122f6b925"
       }
     }
   ],
   "links": {
-    "prev": "---1",
-    "next": "---3"
+    "prev": "https://api.up.com.au/api/v1/transactions/?page%5Bafter%5D=---1",
+    "next": "https://api.up.com.au/api/v1/transactions/?page%5Bafter%5D=---3"
   }
 }
+
