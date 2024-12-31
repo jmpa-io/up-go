@@ -2,40 +2,48 @@
   "data": [
     {
       "type": "transactions",
-      "id": "b015b19b-32f0-41e0-9817-d5fb22fd259e",
+      "id": "f7a9c4d6-0e2b-4867-87f2-d3a4e847f9c4",
       "attributes": {
         "status": "SETTLED",
         "rawText": null,
-        "description": "David Taylor",
-        "message": "Money for the pizzas last night.",
+        "description": "Jane Smith",
+        "message": "Lunch meeting expense.",
         "isCategorizable": true,
         "holdInfo": null,
-        "roundUp": null,
+        "roundUp": {
+          "amount": {
+            "currencyCode": "AUD",
+            "value": "-0.80",
+            "valueInBaseUnits": -8
+          }
+        },
         "cashback": null,
         "amount": {
           "currencyCode": "AUD",
-          "value": "-59.98",
-          "valueInBaseUnits": -5998
+          "value": "-45.30",
+          "valueInBaseUnits": -4530
         },
         "foreignAmount": null,
         "cardPurchaseMethod": null,
-        "settledAt": "2024-11-05T07:25:12+11:00",
-        "createdAt": "2024-11-05T07:25:12+11:00",
+        "settledAt": "2024-11-07T14:15:00+11:00",
+        "createdAt": "2024-11-07T14:15:00+11:00",
         "transactionType": null,
-        "note": null,
-        "performingCustomer": {
-          "displayName": "Bobby"
+        "note": {
+          "text": "Business lunch"
         },
-        "deepLinkURL": "up://transaction/VHJhbnNhY3Rpb24tMzg="
+        "performingCustomer": {
+          "displayName": "Jane"
+        },
+        "deepLinkURL": "up://transaction/VHJhbnNhY3Rpb24tNTY="
       },
       "relationships": {
         "account": {
           "data": {
             "type": "accounts",
-            "id": "420e0a2d-1e5e-4278-a194-219d3fb5c575"
+            "id": "84c3f66d-5e97-477b-a3e3-d78c8bc6b047"
           },
           "links": {
-            "related": "https://api.up.com.au/api/v1/accounts/420e0a2d-1e5e-4278-a194-219d3fb5c575"
+            "related": "https://api.up.com.au/api/v1/accounts/84c3f66d-5e97-477b-a3e3-d78c8bc6b047"
           }
         },
         "transferAccount": {
@@ -44,7 +52,7 @@
         "category": {
           "data": null,
           "links": {
-            "self": "https://api.up.com.au/api/v1/transactions/b015b19b-32f0-41e0-9817-d5fb22fd259e/relationships/category"
+            "self": "https://api.up.com.au/api/v1/transactions/f7a9c4d6-0e2b-4867-87f2-d3a4e847f9c4/relationships/category"
           }
         },
         "parentCategory": {
@@ -54,11 +62,11 @@
           "data": [
             {
               "type": "tags",
-              "id": "Pizza Night"
+              "id": "Business"
             }
           ],
           "links": {
-            "self": "https://api.up.com.au/api/v1/transactions/b015b19b-32f0-41e0-9817-d5fb22fd259e/relationships/tags"
+            "self": "https://api.up.com.au/api/v1/transactions/f7a9c4d6-0e2b-4867-87f2-d3a4e847f9c4/relationships/tags"
           }
         },
         "attachment": {
@@ -66,12 +74,13 @@
         }
       },
       "links": {
-        "self": "https://api.up.com.au/api/v1/transactions/b015b19b-32f0-41e0-9817-d5fb22fd259e"
+        "self": "https://api.up.com.au/api/v1/transactions/f7a9c4d6-0e2b-4867-87f2-d3a4e847f9c4"
       }
     }
   ],
   "links": {
-    "prev": "---2",
+    "prev": "https://api.up.com.au/api/v1/transactions/?page%5Bafter%5D=---2",
     "next": null
   }
 }
+

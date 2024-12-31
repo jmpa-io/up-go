@@ -2,32 +2,32 @@
   "data": [
     {
       "type": "accounts",
-      "id": "4ed1d99c-ce10-4b54-952f-05151c2ab423",
+      "id": "3c0e937b-6cbf-4db6-b302-c54a65775c01",
       "attributes": {
-        "displayName": "Spending",
-        "accountType": "TRANSACTIONAL",
-        "ownershipType": "INDIVIDUAL",
+        "displayName": "Home Loan",
+        "accountType": "HOME_LOAN",
+        "ownershipType": "JOINT",
         "balance": {
           "currencyCode": "AUD",
-          "value": "100.00",
-          "valueInBaseUnits": 10000
+          "value": "52489.00",
+          "valueInBaseUnits": 52489
         },
-        "createdAt": "2024-11-06T14:26:50+11:00"
+        "createdAt": "2022-01-14T13:30:39+11:00"
       },
       "relationships": {
         "transactions": {
           "links": {
-            "related": "https://api.up.com.au/api/v1/accounts/4ed1d99c-ce10-4b54-952f-05151c2ab423/transactions"
+            "related": "https://api.up.com.au/api/v1/accounts/3c0e937b-6cbf-4db6-b302-c54a65775c01/transactions"
           }
         }
       },
       "links": {
-        "self": "https://api.up.com.au/api/v1/accounts/4ed1d99c-ce10-4b54-952f-05151c2ab423"
+        "self": "https://api.up.com.au/api/v1/accounts/3c0e937b-6cbf-4db6-b302-c54a65775c01"
       }
     }
   ],
   "links": {
-    "prev": "---3",
+    "prev": "https://api.up.com.au/api/v1/accounts?page%5Bafter%5D=---2",
     "next": null
   }
 }

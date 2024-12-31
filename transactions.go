@@ -54,7 +54,7 @@ func ListTransactionsOptionTag(tag string) ListTransactionsOption {
 // ListTransactions list all transactions for the authed account.
 // https://developer.up.com.au/#get_transactions
 func (c *Client) ListTransactions(ctx context.Context,
-	options ...ListTransactionsOption,
+	opts ...ListTransactionsOption,
 ) (transactions []TransactionResource, err error) {
 
 	// setup tracing.
@@ -63,7 +63,7 @@ func (c *Client) ListTransactions(ctx context.Context,
 
 	// setup queries.
 	queries := make(url.Values)
-	for _, o := range options {
+	for _, o := range opts {
 		queries[o.name] = []string{o.value}
 	}
 

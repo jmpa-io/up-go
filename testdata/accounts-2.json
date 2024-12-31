@@ -2,32 +2,32 @@
   "data": [
     {
       "type": "accounts",
-      "id": "4ed1d99c-ce10-4b54-952f-05151c2ab423",
+      "id": "8a7d6b33-bd0f-44d3-b8fa-2a9c9e6ebf65",
       "attributes": {
-        "displayName": "Spending",
-        "accountType": "TRANSACTIONAL",
+        "displayName": "Savings",
+        "accountType": "SAVER",
         "ownershipType": "INDIVIDUAL",
         "balance": {
           "currencyCode": "AUD",
-          "value": "100.00",
-          "valueInBaseUnits": 10000
+          "value": "12455.00",
+          "valueInBaseUnits": 12455
         },
-        "createdAt": "2024-11-06T14:26:50+11:00"
+        "createdAt": "2023-04-05T06:10:20+11:00"
       },
       "relationships": {
         "transactions": {
           "links": {
-            "related": "https://api.up.com.au/api/v1/accounts/4ed1d99c-ce10-4b54-952f-05151c2ab423/transactions"
+            "related": "https://api.up.com.au/api/v1/accounts/8a7d6b33-bd0f-44d3-b8fa-2a9c9e6ebf65/transactions"
           }
         }
       },
       "links": {
-        "self": "https://api.up.com.au/api/v1/accounts/4ed1d99c-ce10-4b54-952f-05151c2ab423"
+        "self": "https://api.up.com.au/api/v1/accounts/8a7d6b33-bd0f-44d3-b8fa-2a9c9e6ebf65"
       }
     }
   ],
   "links": {
-    "prev": "---1",
-    "next": "---3"
+    "prev": "https://api.up.com.au/api/v1/accounts?page%5Bafter%5D=---1",
+    "next": "https://api.up.com.au/api/v1/accounts?page%5Bafter%5D=---3"
   }
 }
