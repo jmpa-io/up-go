@@ -2,29 +2,18 @@
   "data": [
     {
       "type": "tags",
-      "id": "Holiday",
+      "id": "Fitness",
       "relationships": {
         "transactions": {
           "links": {
-            "related": "https://api.up.com.au/api/v1/transactions?filter%5Btag%5D=Holiday"
-          }
-        }
-      }
-    },
-    {
-      "type": "tags",
-      "id": "Pizza Night",
-      "relationships": {
-        "transactions": {
-          "links": {
-            "related": "https://api.up.com.au/api/v1/transactions?filter%5Btag%5D=Pizza+Night"
+            "related": "https://api.up.com.au/api/v1/transactions?filter%5Btag%5D=Fitness"
           }
         }
       }
     }
   ],
   "links": {
-    "prev": "---2",
+    "prev": "https://api.up.com.au/api/v1/tags?page%5Bafter%5D=---2",
     "next": null
   }
 }

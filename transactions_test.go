@@ -3,6 +3,7 @@ package up
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -10,11 +11,18 @@ import (
 	"time"
 )
 
-var (
-	transactionsTestdata1 = newTestdata("transactions-1")
-	transactionsTestdata2 = newTestdata("transactions-2")
-	transactionsTestdata3 = newTestdata("transactions-3")
-)
+var transactionsTestdata []*testdata
+
+func init() {
+
+	// populate testdata.
+	for i := 1; i <= 3; i++ {
+		transactionsTestdata = append(
+			transactionsTestdata,
+			newTestdata(fmt.Sprintf("transactions-%v", i)),
+		)
+	}
+}
 
 func Test_ListTransactions(t *testing.T) {
 	tests := map[string]struct {
@@ -25,14 +33,13 @@ func Test_ListTransactions(t *testing.T) {
 		"read transactions": {
 			mock: &mockRoundTripper{
 				MockFunc: func(req *http.Request) *http.Response {
-					var b []byte
-					switch {
-					case strings.Contains(req.URL.String(), "---2"):
-						b = transactionsTestdata2.content
-					case strings.Contains(req.URL.String(), "---3"):
-						b = transactionsTestdata3.content
-					default:
-						b = transactionsTestdata1.content
+					b := transactionsTestdata[0].content
+					for i := 0; i < len(transactionsTestdata); i++ {
+						if !strings.Contains(req.URL.String(), fmt.Sprintf("---%v", i+1)) {
+							continue
+						}
+						b = transactionsTestdata[i].content
+						break
 					}
 					return &http.Response{
 						StatusCode: http.StatusOK,
@@ -53,48 +60,60 @@ func Test_ListTransactions(t *testing.T) {
 						Value:            "-59.98",
 						ValueInBaseUnits: -5998,
 					},
-					SettledAt: time.Date(2024, 11, 5, 7, 25, 12, 0, location),
-					CreatedAt: time.Date(2024, 11, 5, 7, 25, 12, 0, location),
+					SettledAt: time.Date(2024, 11, 05, 07, 25, 12, 00, location),
+					CreatedAt: time.Date(2024, 11, 05, 07, 25, 12, 00, location),
 					PerformingCustomer: TransactionResourcePerformingCustomer{
 						DisplayName: "Bobby",
 					},
 					DeepLinkURL: "up://transaction/VHJhbnNhY3Rpb24tMzg=",
 				},
 				{
-					Status:          "SETTLED",
-					RawText:         "",
-					Description:     "David Taylor",
-					Message:         "Money for the pizzas last night.",
+					Status:          "HELD",
+					RawText:         "SQ* TRAIN TICKETS",
+					Description:     "John Doe",
+					Message:         "Reimbursement for train tickets.",
 					IsCategorizable: true,
 					Amount: Money{
 						CurrencyCode:     "AUD",
-						Value:            "-59.98",
-						ValueInBaseUnits: -5998,
+						Value:            "-20.50",
+						ValueInBaseUnits: -2050,
 					},
-					SettledAt: time.Date(2024, 11, 5, 7, 25, 12, 0, location),
-					CreatedAt: time.Date(2024, 11, 5, 7, 25, 12, 0, location),
+					CreatedAt: time.Date(2024, 11, 06, 8, 45, 00, 00, location),
+					Note: TransactionResourceNote{
+						Text: "Travel expense",
+					},
 					PerformingCustomer: TransactionResourcePerformingCustomer{
-						DisplayName: "Bobby",
+						DisplayName: "John",
 					},
-					DeepLinkURL: "up://transaction/VHJhbnNhY3Rpb24tMzg=",
+					DeepLinkURL: "up://transaction/VHJhbnNhY3Rpb24tNDk=",
 				},
 				{
 					Status:          "SETTLED",
 					RawText:         "",
-					Description:     "David Taylor",
-					Message:         "Money for the pizzas last night.",
+					Description:     "Jane Smith",
+					Message:         "Lunch meeting expense.",
 					IsCategorizable: true,
+					RoundUp: TransactionResourceRoundUp{
+						Amount: Money{
+							CurrencyCode:     "AUD",
+							Value:            "-0.80",
+							ValueInBaseUnits: -8,
+						},
+					},
 					Amount: Money{
 						CurrencyCode:     "AUD",
-						Value:            "-59.98",
-						ValueInBaseUnits: -5998,
+						Value:            "-45.30",
+						ValueInBaseUnits: -4530,
 					},
-					SettledAt: time.Date(2024, 11, 5, 7, 25, 12, 0, location),
-					CreatedAt: time.Date(2024, 11, 5, 7, 25, 12, 0, location),
+					SettledAt: time.Date(2024, 11, 7, 14, 15, 0, 0, location),
+					CreatedAt: time.Date(2024, 11, 7, 14, 15, 0, 0, location),
+					Note: TransactionResourceNote{
+						Text: "Business lunch",
+					},
 					PerformingCustomer: TransactionResourcePerformingCustomer{
-						DisplayName: "Bobby",
+						DisplayName: "Jane",
 					},
-					DeepLinkURL: "up://transaction/VHJhbnNhY3Rpb24tMzg=",
+					DeepLinkURL: "up://transaction/VHJhbnNhY3Rpb24tNTY=",
 				},
 			},
 		},

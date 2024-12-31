@@ -72,6 +72,6 @@
   ],
   "links": {
     "prev": null,
-    "next": "---2"
+    "next": "https://api.up.com.au/api/v1/transactions/?page%5Bafter%5D=---2"
   }
 }

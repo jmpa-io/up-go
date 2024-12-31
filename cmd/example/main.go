@@ -68,4 +68,15 @@ func main() {
 			t.RoundUp.Amount.Value,
 		)
 	}
+
+	// list tags.
+	tags, err := c.ListTags(ctx)
+	if err != nil {
+		fmt.Printf("failed to list tags: %v\n", err)
+		os.Exit(1)
+	}
+	for i, t := range tags {
+		fmt.Printf("%v. %s %s\n", i, t.Type, t.ID)
+	}
+
 }

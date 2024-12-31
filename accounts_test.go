@@ -3,6 +3,7 @@ package up
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -10,13 +11,17 @@ import (
 	"time"
 )
 
-var (
-	accountsTestdata1 = newTestdata("accounts-1")
-	accountsTestdata2 = newTestdata("accounts-2")
-	accountsTestdata3 = newTestdata("accounts-3")
-)
+var accountsTestdata []*testdata
 
-func Test_GetAccounts(t *testing.T) {
+func init() {
+
+	// populate testdata.
+	for i := 1; i <= 3; i++ {
+		accountsTestdata = append(accountsTestdata, newTestdata(fmt.Sprintf("accounts-%v", i)))
+	}
+}
+
+func Test_ListAccounts(t *testing.T) {
 	tests := map[string]struct {
 		mock *mockRoundTripper
 		want []AccountResource
@@ -25,14 +30,13 @@ func Test_GetAccounts(t *testing.T) {
 		"read accounts": {
 			mock: &mockRoundTripper{
 				MockFunc: func(req *http.Request) *http.Response {
-					var b []byte
-					switch {
-					case strings.Contains(req.URL.String(), "---2"):
-						b = accountsTestdata2.content
-					case strings.Contains(req.URL.String(), "---3"):
-						b = accountsTestdata3.content
-					default:
-						b = accountsTestdata1.content
+					b := accountsTestdata[0].content
+					for i := 0; i < len(accountsTestdata); i++ {
+						if !strings.Contains(req.URL.String(), fmt.Sprintf("---%v", i+1)) {
+							continue
+						}
+						b = accountsTestdata[i].content
+						break
 					}
 					return &http.Response{
 						StatusCode: http.StatusOK,
@@ -48,32 +52,32 @@ func Test_GetAccounts(t *testing.T) {
 					OwnershipType: AccountOwnershipTypeIndividual,
 					Balance: Money{
 						CurrencyCode:     "AUD",
-						Value:            "1.00",
-						ValueInBaseUnits: 100,
+						Value:            "1422.00",
+						ValueInBaseUnits: 1422,
 					},
 					CreatedAt: time.Date(2024, 11, 06, 14, 26, 50, 00, location),
 				},
 				{
-					DisplayName:   "Spending",
-					AccountType:   AccountTypeTransactional,
+					DisplayName:   "Savings",
+					AccountType:   AccountTypeSaver,
 					OwnershipType: AccountOwnershipTypeIndividual,
 					Balance: Money{
 						CurrencyCode:     "AUD",
-						Value:            "100.00",
-						ValueInBaseUnits: 10000,
+						Value:            "12455.00",
+						ValueInBaseUnits: 12455,
 					},
-					CreatedAt: time.Date(2024, 11, 06, 14, 26, 50, 00, location),
+					CreatedAt: time.Date(2023, 04, 05, 06, 10, 20, 00, location),
 				},
 				{
-					DisplayName:   "Spending",
-					AccountType:   AccountTypeTransactional,
-					OwnershipType: AccountOwnershipTypeIndividual,
+					DisplayName:   "Home Loan",
+					AccountType:   AccountTypeHomeLoan,
+					OwnershipType: AccountOwnershipTypeJoint,
 					Balance: Money{
 						CurrencyCode:     "AUD",
-						Value:            "100.00",
-						ValueInBaseUnits: 10000,
+						Value:            "52489.00",
+						ValueInBaseUnits: 52489,
 					},
-					CreatedAt: time.Date(2024, 11, 06, 14, 26, 50, 00, location),
+					CreatedAt: time.Date(2022, 01, 14, 13, 30, 39, 00, location),
 				},
 			},
 		},
