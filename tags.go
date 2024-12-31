@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"net/url"
 	"strconv"
 	"strings"
 
@@ -43,22 +42,11 @@ func (c *Client) ListTags(
 	newCtx, span := otel.Tracer(c.tracerName).Start(ctx, "ListTags")
 	defer span.End()
 
-	// setup queries.
-	queries := make(url.Values)
-	for _, o := range opts {
-		queries[o.name] = []string{o.value}
-	}
-
-	// default queries.
-	if _, ok := queries["page[size]"]; !ok {
-		queries["page[size]"] = []string{"100"}
-	}
-
 	// setup request.
 	sr := senderRequest{
 		method:  http.MethodGet,
 		path:    "/tags",
-		queries: queries,
+		queries: setupQueries(opts),
 	}
 
 	// retrieve tags.
