@@ -3,7 +3,6 @@ package up
 import (
 	"context"
 	"net/http"
-	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -61,22 +60,11 @@ func (c *Client) ListTransactions(ctx context.Context,
 	newCtx, span := otel.Tracer(c.tracerName).Start(ctx, "ListTransactions")
 	defer span.End()
 
-	// setup queries.
-	queries := make(url.Values)
-	for _, o := range opts {
-		queries[o.name] = []string{o.value}
-	}
-
-	// default queries.
-	if _, ok := queries["page[size]"]; !ok {
-		queries["page[size]"] = []string{"100"}
-	}
-
 	// setup request.
 	sr := senderRequest{
 		method:  http.MethodGet,
 		path:    "/transactions",
-		queries: queries,
+		queries: setupQueries(opts),
 	}
 
 	// retrieve transactions.

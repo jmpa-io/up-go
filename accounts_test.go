@@ -24,6 +24,7 @@ func init() {
 func Test_ListAccounts(t *testing.T) {
 	tests := map[string]struct {
 		mock *mockRoundTripper
+		opts []ListAccountsOption
 		want []AccountResource
 		err  string
 	}{
@@ -96,7 +97,7 @@ func Test_ListAccounts(t *testing.T) {
 
 		// run tests.
 		t.Run(name, func(t *testing.T) {
-			got, err := c.ListAccounts(ctx)
+			got, err := c.ListAccounts(ctx, tt.opts...)
 
 			// any errors?
 			if tt.err != "" && err != nil {
