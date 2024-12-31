@@ -28,11 +28,3 @@ func WithHttpClient(httpClient iHttpClient) Option {
 		return nil
 	}
 }
-
-// WithEndpoint sets a custom endpoint for API communication.
-func WithEndpoint(endpoint string) Option {
-	return func(c *Client) error {
-		c.endpoint = endpoint
-		return nil
-	}
-}
