@@ -1,6 +1,6 @@
 package up
 
-// TagResource represents a tag in Up.
+// TagResource defines the core details of a tag.
 type TagResource struct {
 	Object
 }

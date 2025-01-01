@@ -5,7 +5,7 @@ import (
 )
 
 // A helper function to check if an interface has a value or not.
-// taken from: https://mangatmodi.medium.com/go-check-nil-interface-the-right-way-d142776edef1
+// https://mangatmodi.medium.com/go-check-nil-interface-the-right-way-d142776edef1.
 func isNil(i interface{}) bool {
 	if i == nil {
 		return true

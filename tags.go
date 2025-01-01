@@ -10,11 +10,13 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-// Tags represents tags in Up.
-type TagsWrapper WrapperSlice[TagResource]
+// TagsPaginationWrapper is a pagination wrapper for a slice of TagResource. It
+// is used to organize paginated tag data received from the API.
+type TagsPaginationWrapper WrapperSlice[TagResource]
 
-// wrapTags wraps the given tags in the data wrapper, ready to be sent to the API.
-func wrapTags(tags []string) (wrappedTags TagsWrapper) {
+// wrapTags wraps the given slice of tags into a TagsPaginationWrapper. Each
+// tag string is transformed into a TagResource before being sent to the API.
+func wrapTags(tags []string) (wrappedTags TagsPaginationWrapper) {
 	for _, t := range tags {
 		wrappedTags.Data = append(
 			wrappedTags.Data,
@@ -24,15 +26,23 @@ func wrapTags(tags []string) (wrappedTags TagsWrapper) {
 	return wrappedTags
 }
 
+// ListTagsOption defines the available options used to configure the ListTags
+// function when listing tags from the API.
 type ListTagsOption struct {
-	ListOption
+	listOption
 }
 
+// ListTagsOptionPageSize sets the page size used when when listing tags from
+// the API. This option affects how many tags are returned at once - increasing
+// this can improve performance as the number of API calls is reduced.
 func ListTagsOptionPageSize(size int) ListTagsOption {
-	return ListTagsOption{NewListOption("page[size]", strconv.Itoa(size))}
+	return ListTagsOption{newListOption("page[size]", strconv.Itoa(size))}
 }
 
-// https://developer.up.com.au/#tags
+// ListTags returns a list of ALL tags associated with the user from the API.
+// This function supports pagination, and is configurable by the given
+// ListTagsOption options.
+// https://developer.up.com.au/#tags.
 func (c *Client) ListTags(
 	ctx context.Context,
 	opts ...ListTagsOption,
@@ -53,7 +63,7 @@ func (c *Client) ListTags(
 	for {
 
 		// get response.
-		var resp TagsWrapper
+		var resp TagsPaginationWrapper
 		if _, err := c.sender(newCtx, sr, &resp); err != nil {
 			return nil, err
 		}
@@ -75,9 +85,10 @@ func (c *Client) ListTags(
 
 }
 
-// AddTagsToTransaction, using the given transaction id, adds the given tags to
-// the transaction.
-// https://developer.up.com.au/#post_transactions_transactionId_relationships_tags
+// AddTagsToTransaction adds the given tags to a transaction, via the given
+// transaction id. This function only returns an error, and won't return
+// anything if successful.
+// https://developer.up.com.au/#post_transactions_transactionId_relationships_tags.
 func (c *Client) AddTagsToTransaction(ctx context.Context, id string, tags []string) error {
 
 	// setup tracing.
@@ -93,9 +104,10 @@ func (c *Client) AddTagsToTransaction(ctx context.Context, id string, tags []str
 	return err
 }
 
-// RemoveTagsFromTransaction, using the given transaction id, removes the given
-// tags from a transaction.
-// https://developer.up.com.au/#delhttps://developer.up.com.au/#tagsete_transactions_transactionId_relationships_tags
+// RemoveTagsFromTransaction removes the given tags from a transaction,
+// identified by the given transaction id. This function only returns an error,
+// and won't return anything if successful.
+// https://developer.up.com.au/#delhttps://developer.up.com.au/#tagsete_transactions_transactionId_relationships_tags.
 func (c *Client) RemoveTagsFromTransaction(ctx context.Context, id string, tags []string) error {
 
 	// setup tracing.
