@@ -5,8 +5,12 @@ PROJECT=up-go
 endif
 
 # Targets.
-example: binary-go-example ## Build the example binary.
-run: build-go-example ## Builds & runs the example binary.
+accounts: binary-go-accounts ## Build the 'accounts' binary.
+ping: binary-go-ping ## Build the 'ping' binary.
+tags: binary-go-tags ## Build the 'tags' binary.
+transactions: binary-go-transactions ## Build the `transactions` binary.
+run: accounts ping tags transactions
+PHONY += run
 
 ---: ## ---
 
