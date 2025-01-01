@@ -53,6 +53,7 @@ func main() {
 	transactions, err := c.ListTransactions(ctx)
 	if err != nil {
 		fmt.Printf("failed to list transactions: %v\n", err)
+		os.Exit(1)
 	}
 	for i, t := range transactions {
 		fmt.Printf(
