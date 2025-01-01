@@ -35,7 +35,7 @@ func Test_setupQueries(t *testing.T) {
 		"setup queries for ListTransactions": {
 			options: []ListTransactionsOption{
 				ListTransactionsOptionPageSize(10000),
-				ListTransactionsOptionStatus(FilterStatusHeld),
+				ListTransactionsOptionStatus(TransactionStatusHeld),
 				ListTransactionsOptionSince(time.Date(2022, 1, 10, 0, 0, 0, 0, location)),
 				ListTransactionsOptionUntil(time.Date(2023, 12, 6, 0, 0, 0, 0, location)),
 				ListTransactionsOptionCategory("hello"),

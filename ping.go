@@ -7,7 +7,7 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-// Ping represents a ping event sent from the API.
+// Ping represents a ping event returned from the API.
 type Ping struct {
 	Meta PingMeta `json:"meta"`
 }
@@ -18,8 +18,9 @@ type PingMeta struct {
 	StatusEmoji string `json:"statusEmoji"`
 }
 
-// Ping makes a ping request to the API.
-// https://developer.up.com.au/#get_util_ping
+// Ping makes a ping request to the API. Use this to quickly determine if your
+// provided token is working or not.
+// https://developer.up.com.au/#get_util_ping.
 func (c *Client) Ping(ctx context.Context) (*Ping, error) {
 
 	// setup tracing.

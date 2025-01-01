@@ -2,7 +2,6 @@ package up
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -15,7 +14,7 @@ type iHttpClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-// Client defines an Up Bank client; the interface for this package.
+// Client defines a client for this package.
 type Client struct {
 
 	// tracing.
@@ -31,8 +30,11 @@ type Client struct {
 	logger   *slog.Logger // The logger used in this client (custom or default).
 }
 
-// New returns a client for this package, which can be used to make
-// requests to the Up Bank API.
+// New creates and returns a new Client, initialized with the provided token.
+// The client itself is set up with tracing, logging, and HTTP configuration.
+// Additional options can be provided to modify its behavior, via the options
+// slice. The client is used for making requests and interacting with the Up
+// Bank API.
 func New(ctx context.Context, token string, options ...Option) (*Client, error) {
 
 	// setup tracing.
@@ -82,24 +84,4 @@ func New(ctx context.Context, token string, options ...Option) (*Client, error) 
 
 	c.logger.Debug("client setup successfully")
 	return c, nil
-}
-
-// ---
-
-// ErrClientEmptyToken is returned when no token is provided to the client.
-type ErrClientEmptyToken struct {
-}
-
-func (e ErrClientEmptyToken) Error() string {
-	return "the provided token is empty"
-}
-
-// ErrClientFailedToSetOption is returned when an option encounters an error
-// when trying to be set with the client.
-type ErrClientFailedToSetOption struct {
-	err error
-}
-
-func (e ErrClientFailedToSetOption) Error() string {
-	return fmt.Sprintf("failed to set option in client: %v", e.err)
 }
