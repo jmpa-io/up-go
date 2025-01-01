@@ -4,27 +4,30 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"go.opentelemetry.io/otel"
 )
 
-// senderRequest simplifies sending a given request to the API endpoint, by the sender.
+// senderRequest represents the parameters for sending a request to the API,
+// via the sender function.
 type senderRequest struct {
-	method  string
-	path    string
-	data    interface{}
-	queries url.Values
+	method  string      // The HTTP method to use (eg. GET, POST, PUT, DELETE).
+	path    string      // The path appended to the API endpoint to send request to.
+	data    interface{} // The request body data.
+	queries url.Values  // Any URL query parameters to send with the request.
 }
 
+// apiErrorResponseErrorSource represents the source of an API error returned
+// when sending a request to the API, such as a specific parameter.
 type apiErrorResponseErrorSource struct {
 	Parameter string `json:"parameter"`
 }
 
+// apiErrorResponseError represents an individual error returned when sending
+// a request to the API.
 type apiErrorResponseError struct {
 	Status string                      `json:"status"`
 	Title  string                      `json:"title"`
@@ -32,12 +35,15 @@ type apiErrorResponseError struct {
 	Source apiErrorResponseErrorSource `json:"source"`
 }
 
-// apiErrorResponse represents one or more errors returned from the API.
+// apiErrorResponse represents a collection of errors returned from the API.
 type apiErrorResponse struct {
 	Errors []apiErrorResponseError `json:"errors"`
 }
 
-// sender sends the given senderRequest to the API endpoint.
+// sender sends a HTTP request, configured by the senderRequest, to the API and
+// processes the response. A 'result' interface{} can be given to unmarshal any
+// body returned in the response, which then can be used wherever this function
+// is called.
 func (c *Client) sender(
 	ctx context.Context,
 	sr senderRequest,
@@ -97,56 +103,4 @@ func (c *Client) sender(
 		return nil, ErrFailedUnmarshal{err}
 	}
 	return nil, ErrSenderInvalidResponse{errs, resp.StatusCode}
-}
-
-// ---
-
-// ErrSenderFailedSetupRequest is returned whenever the sender fails to
-// setup a new http request.
-type ErrSenderFailedSetupRequest struct {
-	err error
-}
-
-func (e ErrSenderFailedSetupRequest) Error() string {
-	return fmt.Sprintf("failed to setup http request: %v", e.err)
-}
-
-// ErrSenderFailedSendRequest is returned whenever the sender fails to send
-// a new http request.
-type ErrSenderFailedSendRequest struct {
-	err error
-}
-
-func (e ErrSenderFailedSendRequest) Error() string {
-	return fmt.Sprintf("failed to send http request: %v", e.err)
-}
-
-// ErrSenderFailedParseResponse is returned when the sender fails to parse a
-// response from the API.
-type ErrSenderFailedParseResponse struct {
-	err error
-}
-
-func (e ErrSenderFailedParseResponse) Error() string {
-	return fmt.Sprintf("failed to parse response: %v", e.err)
-}
-
-// ErrSenderInvalidResponse is returned when the sender receives an error
-// response specifically from the API.
-type ErrSenderInvalidResponse struct {
-	errs       apiErrorResponse
-	statusCode int
-}
-
-func (e ErrSenderInvalidResponse) Error() string {
-	var errs []string
-	for _, err := range e.errs.Errors {
-		errs = append(errs, err.Title)
-	}
-	return fmt.Sprintf(
-		"error response returned from API; status_code=%v, count=%v, errors=%s",
-		e.statusCode,
-		len(errs),
-		strings.Join(errs, ";"),
-	)
 }

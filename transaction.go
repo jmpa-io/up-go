@@ -4,54 +4,67 @@ import (
 	"time"
 )
 
+// TransactionStatus represents the status of a transaction.
 type TransactionStatus string
 
 const (
-	TransactionStatusHeld    TransactionStatus = "HELD"
-	TransactionStatusSettled                   = "SETTLED"
+	TransactionStatusHeld    TransactionStatus = "HELD"    // Transaction amount has not yet left your account.
+	TransactionStatusSettled                   = "SETTLED" // Transaction amount has left your account.
 )
 
+// TransactionCardPurchaseMethod defines the method used to complete a purchase.
 type TransactionCardPurchaseMethod string
 
 const (
-	TransactionCardPurchaseMethodBarCode       TransactionCardPurchaseMethod = "BAR_CODE"
-	TransactionCardPurchaseMethodOCR                                         = "OCR"
-	TransactionCardPurchaseMethodCardPin                                     = "CARD_PIN"
-	TransactionCardPurchaseMethodCardDetails                                 = "CARD_DETAILS"
-	TransactionCardPurchaseMethodCardOnFile                                  = "CARD_ON_FILE"
-	TransactionCardPurchaseMethordEcommerce                                  = "ECOMMERCE"
-	TransactionCardPurchaseMethodMagneticStrip                               = "MAGNETIC_STRIP"
-	TransactionCardPurchaseMethodContactless                                 = "CONTACTLESS"
+	TransactionCardPurchaseMethodBarCode       TransactionCardPurchaseMethod = "BAR_CODE"       // Purchased via barcode.
+	TransactionCardPurchaseMethodOCR                                         = "OCR"            // Purchased via Optical Character Recognition (OCR).
+	TransactionCardPurchaseMethodCardPin                                     = "CARD_PIN"       // Purchased via card PIN.
+	TransactionCardPurchaseMethodCardDetails                                 = "CARD_DETAILS"   // Purchased via card details.
+	TransactionCardPurchaseMethodCardOnFile                                  = "CARD_ON_FILE"   // Purchased via stored card on file.
+	TransactionCardPurchaseMethordEcommerce                                  = "ECOMMERCE"      // Purchased via online purchase (e-commerce).
+	TransactionCardPurchaseMethodMagneticStrip                               = "MAGNETIC_STRIP" // Purchased via magnetic stripe.
+	TransactionCardPurchaseMethodContactless                                 = "CONTACTLESS"    // Purchased via contactless payment.
 )
 
+// TransactionResourceHoldInfo defines details about a held transaction.
 type TransactionResourceHoldInfo struct {
 	Amount        Money `json:"amount"`
 	ForeignAmount Money `json:"foreignAmount"`
 }
 
+// TransactionResourceRoundUp defines details about the round-up and
+// boost-portion amounts associated with a transaction.
 type TransactionResourceRoundUp struct {
 	Amount       Money `json:"amount"`
 	BoostPortion Money `json:"boostPortion"`
 }
 
+// TransactionResourceCashback defines details about any cashbacks earned with
+// a transaction.
 type TransactionResourceCashback struct {
 	Description string `json:"description"`
 	Amount      Money  `json:"amount"`
 }
 
+// TransactionResourceCardPurchaseMethod defines details about the card used,
+// and purchase method, for a transaction.
 type TransactionResourceCardPurchaseMethod struct {
 	CardNumberSuffix string                        `json:"cardNumberSuffix"`
 	Method           TransactionCardPurchaseMethod `json:"method"`
 }
 
+// TransactionResourceNote represents a note attached to a transaction.
 type TransactionResourceNote struct {
 	Text string `json:"text"`
 }
 
+// TransactionResourcePerformingCustomer defines details about the customer
+// who performed the transaction.
 type TransactionResourcePerformingCustomer struct {
 	DisplayName string `json:"displayName"`
 }
 
+// TransactionResource defines the core details of a transaction.
 type TransactionResource struct {
 	Status             TransactionStatus                     `json:"status"`
 	RawText            string                                `json:"rawText"`
@@ -72,6 +85,8 @@ type TransactionResource struct {
 	DeepLinkURL        string                                `json:"deepLinkURL"`
 }
 
+// TransactionRelationships defines the relationships to other resources for
+// a transaction.
 type TransactionRelationships struct {
 	Account         Wrapper[Object]      `json:"account"`
 	TransferAccount Wrapper[Object]      `json:"transferAccount"`
@@ -81,5 +96,6 @@ type TransactionRelationships struct {
 	Attachment      Wrapper[Object]      `json:"attachment"`
 }
 
-// Transaction represents a transaction in Up.
-type Transaction Data[TransactionResource, TransactionRelationships]
+// TransactionDataWrapper wraps the resources and relationships for transaction
+// data returned from the API.
+type TransactionDataWrapper Data[TransactionResource, TransactionRelationships]
