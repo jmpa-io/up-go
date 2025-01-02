@@ -1,6 +1,5 @@
 <!-- markdownlint-disable MD041 MD010 -->
 
-
 ## `up-go`
 
 <img align="right" width="250px" src="docs/logo.png">
@@ -8,7 +7,6 @@
 ```diff
 + 📚 A Go abstraction over the Up Bank API.
 +    https://developer.up.com.au/docs.
-
 ```
 
 ```diff
@@ -18,7 +16,8 @@
 ```
 
 <a href="LICENSE" target="_blank"><img src="https://img.shields.io/github/license/jmpa-io/up-go.svg" alt="GitHub License"></a>
-[![up-go](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml/badge.svg)](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml)
+[![CI/CD](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml/badge.svg)](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml)
+[![Automerge](https://github.com/jmpa-io/up-go/actions/workflows/.github/workflows/dependabot-automerge.yml/badge.svg)](https://github.com/jmpa-io/up-go/actions/workflows/.github/workflows/dependabot-automerge.yml)
 
 ## `API Coverage`
 
