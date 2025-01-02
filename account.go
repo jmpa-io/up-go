@@ -9,8 +9,8 @@ type AccountType string
 
 const (
 	AccountTypeSaver         AccountType = "SAVER"         // A savings account.
-	AccountTypeTransactional             = "TRANSACTIONAL" // A transactional account.
-	AccountTypeHomeLoan                  = "HOME_LOAN"     // A home_loan account.
+	AccountTypeTransactional AccountType = "TRANSACTIONAL" // A transactional account.
+	AccountTypeHomeLoan      AccountType = "HOME_LOAN"     // A home_loan account.
 )
 
 // AccountOwnershipType represents the type of ownership for an account.
@@ -18,7 +18,7 @@ type AccountOwnershipType string
 
 const (
 	AccountOwnershipTypeIndividual AccountOwnershipType = "INDIVIDUAL" // An account owned by a single person.
-	AccountOwnershipTypeJoint                           = "JOINT"      // An account owned by multiple people.
+	AccountOwnershipTypeJoint      AccountOwnershipType = "JOINT"      // An account owned by multiple people.
 )
 
 // AccountResource defines the core details of an account.

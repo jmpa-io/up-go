@@ -69,9 +69,7 @@ func (c *Client) ListTags(
 		}
 
 		// extract response data.
-		for _, t := range resp.Data {
-			tags = append(tags, t)
-		}
+		tags = append(tags, resp.Data...)
 
 		// paginate?
 		if resp.Links.Next == "" {

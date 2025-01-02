@@ -9,7 +9,7 @@ type TransactionStatus string
 
 const (
 	TransactionStatusHeld    TransactionStatus = "HELD"    // Transaction amount has not yet left your account.
-	TransactionStatusSettled                   = "SETTLED" // Transaction amount has left your account.
+	TransactionStatusSettled TransactionStatus = "SETTLED" // Transaction amount has left your account.
 )
 
 // TransactionCardPurchaseMethod defines the method used to complete a purchase.
@@ -17,13 +17,13 @@ type TransactionCardPurchaseMethod string
 
 const (
 	TransactionCardPurchaseMethodBarCode       TransactionCardPurchaseMethod = "BAR_CODE"       // Purchased via barcode.
-	TransactionCardPurchaseMethodOCR                                         = "OCR"            // Purchased via Optical Character Recognition (OCR).
-	TransactionCardPurchaseMethodCardPin                                     = "CARD_PIN"       // Purchased via card PIN.
-	TransactionCardPurchaseMethodCardDetails                                 = "CARD_DETAILS"   // Purchased via card details.
-	TransactionCardPurchaseMethodCardOnFile                                  = "CARD_ON_FILE"   // Purchased via stored card on file.
-	TransactionCardPurchaseMethordEcommerce                                  = "ECOMMERCE"      // Purchased via online purchase (e-commerce).
-	TransactionCardPurchaseMethodMagneticStrip                               = "MAGNETIC_STRIP" // Purchased via magnetic stripe.
-	TransactionCardPurchaseMethodContactless                                 = "CONTACTLESS"    // Purchased via contactless payment.
+	TransactionCardPurchaseMethodOCR           TransactionCardPurchaseMethod = "OCR"            // Purchased via Optical Character Recognition (OCR).
+	TransactionCardPurchaseMethodCardPin       TransactionCardPurchaseMethod = "CARD_PIN"       // Purchased via card PIN.
+	TransactionCardPurchaseMethodCardDetails   TransactionCardPurchaseMethod = "CARD_DETAILS"   // Purchased via card details.
+	TransactionCardPurchaseMethodCardOnFile    TransactionCardPurchaseMethod = "CARD_ON_FILE"   // Purchased via stored card on file.
+	TransactionCardPurchaseMethordEcommerce    TransactionCardPurchaseMethod = "ECOMMERCE"      // Purchased via online purchase (e-commerce).
+	TransactionCardPurchaseMethodMagneticStrip TransactionCardPurchaseMethod = "MAGNETIC_STRIP" // Purchased via magnetic stripe.
+	TransactionCardPurchaseMethodContactless   TransactionCardPurchaseMethod = "CONTACTLESS"    // Purchased via contactless payment.
 )
 
 // TransactionResourceHoldInfo defines details about a held transaction.
