@@ -1,19 +1,19 @@
 <!-- markdownlint-disable MD041 MD010 -->
-[![up-go](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml/badge.svg)](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml)
 
-<p align="center">
-  <img src="docs/logo.png"/>
-</p>
+<img align="right" width="250px" src="docs/logo.png">
 
-# `up-go`
+## `up-go`
+
+📚 A Go abstraction over the Up Bank API: https://developer.up.com.au/docs.
 
 ```diff
-+ 📚 A Go abstraction over the Up Bank API: https://developer.up.com.au/docs.
+- This is a WORK-IN-PROGRESS. Use at your own risk!
 
-! This is a WORK-IN-PROGRESS. Use at your own risk!
-
-~ This repository has no ties to Up.
+! This repository has no ties to Up.
 ```
+
+<a href="LICENSE" target="_blank"><img src="https://img.shields.io/github/license/jmpa-io/up-go.svg" alt="GitHub License"></a>
+[![up-go](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml/badge.svg)](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml)
 
 ## `API Coverage`
 
