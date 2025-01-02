@@ -5,8 +5,7 @@
 <img align="right" width="250px" src="docs/logo.png">
 
 ```diff
-+ 📚 A Go abstraction over the Up Bank API.
-+    https://developer.up.com.au/docs.
++ 📚 A Go abstraction over the Up Bank API: https://developer.up.com.au/docs.
 ```
 
 ```diff
