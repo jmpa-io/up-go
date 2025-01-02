@@ -1,6 +1,5 @@
 <!-- markdownlint-disable MD041 MD010 -->
 
-<img align="right" width="250px" src="docs/logo.png">
 
 ## `up-go`
 
@@ -11,6 +10,8 @@
 
 ! This repository has no ties to Up.
 ```
+
+<img align="right" width="250px" src="docs/logo.png">
 
 <a href="LICENSE" target="_blank"><img src="https://img.shields.io/github/license/jmpa-io/up-go.svg" alt="GitHub License"></a>
 [![up-go](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml/badge.svg)](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml)
