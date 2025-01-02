@@ -3,6 +3,8 @@
 
 ## `up-go`
 
+<img align="right" width="250px" src="docs/logo.png">
+
 📚 A Go abstraction over the Up Bank API: https://developer.up.com.au/docs.
 
 ```diff
@@ -10,8 +12,6 @@
 
 ! This repository has no ties to Up.
 ```
-
-<img align="right" width="250px" src="docs/logo.png">
 
 <a href="LICENSE" target="_blank"><img src="https://img.shields.io/github/license/jmpa-io/up-go.svg" alt="GitHub License"></a>
 [![up-go](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml/badge.svg)](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml)
