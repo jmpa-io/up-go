@@ -1,14 +1,13 @@
 <!-- markdownlint-disable MD041 MD010 -->
+<p align="center">
+    <img src="docs/logo.png">
+</p>
 
 ## `up-go`
 
-<img align="right" width="250px" src="docs/logo.png">
-
 ```diff
 + 📚 A Go abstraction over the Up Bank API: https://developer.up.com.au/docs.
-```
 
-```diff
 - This is a WORK-IN-PROGRESS. Use at your own risk!
 
 ! This repository has no ties to Up.
