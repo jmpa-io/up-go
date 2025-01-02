@@ -9,6 +9,10 @@
 + 📚 A Go abstraction over the Up Bank API.
 +    https://developer.up.com.au/docs.
 
+```
+<br/>
+
+```diff
 - This is a WORK-IN-PROGRESS. Use at your own risk!
 
 ! This repository has no ties to Up.
