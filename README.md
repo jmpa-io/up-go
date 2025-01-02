@@ -1,6 +1,5 @@
 <!-- markdownlint-disable MD041 MD010 -->
 [![up-go](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml/badge.svg)](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml)
-[![up-go](https://github.com/jmpa-io/up-go/actions/workflows/README.yml/badge.svg)](https://github.com/jmpa-io/up-go/actions/workflows/README.yml)
 
 <p align="center">
   <img src="docs/logo.png"/>
@@ -18,7 +17,7 @@
 
 ## `API Coverage`
 
-The following API endpoints are currently covered by this SDK:
+The following API endpoints are currently covered by this package:
 
 - [x] [List accounts](https://developer.up.com.au/#get_accounts).
 - [ ] [Get an account by id](https://developer.up.com.au/#get_accounts_id).
@@ -40,3 +39,52 @@ The following API endpoints are currently covered by this SDK:
 - [ ] [Delete webhook](https://developer.up.com.au/#delete_webhooks_id).
 - [ ] [Ping a webhook](https://developer.up.com.au/#post_webhooks_webhookId_ping).
 - [ ] [List webhook logs](https://developer.up.com.au/#get_webhooks_webhookId_logs).
+
+## `Usage`
+
+Below is a basic example of how to get started with this package:
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log/slog"
+	"os"
+
+	"github.com/jmpa-io/up-go"
+)
+
+func main() {
+
+	// setup tracing.
+	ctx := context.TODO()
+
+	// retrieve token.
+	token := os.Getenv("UP_TOKEN")
+
+	// setup client.
+	c, err := up.New(ctx, token, up.WithLogLevel(slog.LevelWarn))
+	if err != nil {
+		fmt.Printf("failed to setup client: %v\n", err)
+		os.Exit(1)
+	}
+
+	// ping!
+	p, err := c.Ping(ctx)
+	if err != nil {
+		fmt.Printf("failed to ping: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("%s\n", p.Meta.StatusEmoji)
+}
+```
+
+For more explicit examples, see the `cmd/*/main.go` files for details.
+
+## `License`
+
+This work is published under the MIT license.
+
+Please see the [`LICENSE`](./LICENSE) file for details.
