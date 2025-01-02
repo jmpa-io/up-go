@@ -16,6 +16,7 @@
 <a href="LICENSE" target="_blank"><img src="https://img.shields.io/github/license/jmpa-io/up-go.svg" alt="GitHub License"></a>
 [![CI/CD](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml/badge.svg)](https://github.com/jmpa-io/up-go/actions/workflows/cicd.yml)
 [![Automerge](https://github.com/jmpa-io/up-go/actions/workflows/.github/workflows/dependabot-automerge.yml/badge.svg)](https://github.com/jmpa-io/up-go/actions/workflows/.github/workflows/dependabot-automerge.yml)
+[![Codecov](https://codecov.io/github/jmpa-io/up-go/graph/badge.svg?token=8LXBLNQSOW)](https://codecov.io/github/jmpa-io/up-go)
 
 ## `API Coverage`
 
