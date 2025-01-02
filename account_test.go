@@ -1,3 +1,3 @@
 package up
 
-var accountTestdata = newTestdata("account")
+// var accountTestdata = newTestdata("account")
