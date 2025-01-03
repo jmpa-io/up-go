@@ -1,0 +1,6 @@
+---
+ignore:
+  - cmd/accounts/
+  - cmd/ping/
+  - cmd/tags/
+  - cmd/transactions/
