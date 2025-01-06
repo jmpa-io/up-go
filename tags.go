@@ -97,7 +97,7 @@ func (c *Client) AddTagsToTransaction(ctx context.Context, id string, tags []str
 	_, err := c.sender(newCtx, senderRequest{
 		method: http.MethodPost,
 		path:   fmt.Sprintf("/transactions/%s/relationships/tags", id),
-		data:   wrapTags(tags),
+		body:   wrapTags(tags),
 	}, nil)
 	return err
 }
@@ -116,7 +116,7 @@ func (c *Client) RemoveTagsFromTransaction(ctx context.Context, id string, tags 
 	_, err := c.sender(newCtx, senderRequest{
 		method: http.MethodDelete,
 		path:   fmt.Sprintf("/transactions/%s/relationships/tags", id),
-		data:   wrapTags(tags),
+		body:   wrapTags(tags),
 	}, nil)
 	return err
 }
