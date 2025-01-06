@@ -32,7 +32,7 @@ func Test_sender(t *testing.T) {
 	}{
 		"catch json marshal error": {
 			request: senderRequest{
-				data: make(chan int), // can't marshal a channel.
+				body: make(chan int), // can't marshal a channel.
 			},
 			err: ErrFailedMarshal{emptyErr}.Error(),
 		},
