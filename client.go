@@ -47,8 +47,10 @@ func New(ctx context.Context, token string, options ...Option) (*Client, error) 
 		return nil, ErrClientEmptyToken{}
 	}
 
-	// default client.
+	// setup client w/ default values.
 	c := &Client{
+		tracerName: tracerName,
+
 		httpClient: http.DefaultClient,
 		endpoint:   "https://api.up.com.au/api/v1",
 	}
