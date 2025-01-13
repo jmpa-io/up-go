@@ -122,10 +122,10 @@ func Test_New(t *testing.T) {
 			}
 			switch {
 			case
-				got.headers.Get("Authorization") != headers.Get("Authorization"),
 				got.logLevel != tt.want.logLevel,
 				(got.logger != slog.Default() && tt.want.logger != slog.Default()) && got.logger != tt.want.logger,
-				got.httpClient != tt.want.httpClient:
+				got.httpClient != tt.want.httpClient,
+				got.headers.Get("Authorization") != headers.Get("Authorization"):
 				t.Errorf(
 					"New() returned unexpected configuration; want=%+v, got=%+v\n",
 					tt.want,
