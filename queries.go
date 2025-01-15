@@ -24,7 +24,7 @@ func setupQueries(options interface{}) url.Values {
 		}
 	}
 
-	// add default "page[size]" if it's not already set.
+	// add default "page[size]", if it's not already set.
 	if _, ok := queries["page[size]"]; !ok {
 		queries["page[size]"] = []string{"100"}
 	}
