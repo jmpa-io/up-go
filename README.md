@@ -30,8 +30,8 @@ The following API endpoints are currently covered by this package:
 - [ ] [Get a category by id](https://developer.up.com.au/#get_categories).
 - [ ] [Add a category to a transaction](https://developer.up.com.au/#patch_transactions_transactionId_relationships_category).
 - [x] [List tags](https://developer.up.com.au/#get_tags).
-- [ ] [Add tags to a transaction](https://developer.up.com.au/#post_transactions_transactionId_relationships_tags).
-- [ ] [Remote tags from a transaction](https://developer.up.com.au/#delete_transactions_transactionId_relationships_tags).
+- [x] [Add tags to a transaction](https://developer.up.com.au/#post_transactions_transactionId_relationships_tags).
+- [x] [Remote tags from a transaction](https://developer.up.com.au/#delete_transactions_transactionId_relationships_tags).
 - [x] [List transactions](https://developer.up.com.au/#get_transactions).
 - [ ] [Get a transaction by id](https://developer.up.com.au/#get_transactions_id).
 - [ ] [List transactions by account](https://developer.up.com.au/#get_accounts_accountId_transactions).
