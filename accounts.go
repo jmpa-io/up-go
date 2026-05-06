@@ -2,81 +2,66 @@ package up
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/codes"
 )
 
-// AccountsPaginationWrapper is a pagination wrapperfor a slice of AccountData.
-// This type is used in organizing paginated account data received from the API.
+// AccountsPaginationWrapper is a pagination wrapper for a slice of AccountDataWrapper.
 type AccountsPaginationWrapper WrapperSlice[AccountDataWrapper]
 
-// ListAccountsOption defines the available options used to configure the
-// ListAccounts function when listing accounts from the API.
+// ListAccountsOption configures a ListAccounts call.
 type ListAccountsOption struct {
 	listOption
 }
 
-// ListAccountsOptionPageSize sets the page size used when when listing
-// accounts from the API. This option affects how many accounts are returned at
-// once - increasing this can improve performance as the number of API calls
-// is reduced.
+// ListAccountsOptionPageSize sets the number of accounts returned per page.
 func ListAccountsOptionPageSize(size int) ListAccountsOption {
 	return ListAccountsOption{newListOption("page[size]", strconv.Itoa(size))}
 }
 
-// ListAccountsOptionFilterAccountType filters the accounts returned from the
-// API to those who are either "SAVER", "TRANSACTIONAL", or "HOME_LOAN". Use
-// this option if, for example, you'd like to list all accounts that are
-// transactional and not associated with your savings or your home loan.
+// ListAccountsOptionFilterAccountType filters accounts to SAVER, TRANSACTIONAL,
+// or HOME_LOAN.
 func ListAccountsOptionFilterAccountType(t AccountType) ListAccountsOption {
 	return ListAccountsOption{newListOption("filter[accountType]", string(t))}
 }
 
-// ListAccountsOptionFilterAccountOwnershipType filters the accounts returned
-// from the API to those who are either "INDIVIDUAL" or "JOINT". Use this option
-// if, for example, you'd like to list all accounts that belong to you only..
+// ListAccountsOptionFilterAccountOwnershipType filters accounts to INDIVIDUAL
+// or JOINT ownership.
 func ListAccountsOptionFilterAccountOwnershipType(t AccountOwnershipType) ListAccountsOption {
 	return ListAccountsOption{newListOption("filter[ownershipType]", string(t))}
 }
 
-// ListAccounts returns a list of ALL accounts associated with authed user from
-// the API. This function supports pagination, and is configurable by the given
-// ListAccountsOptions options.
+// ListAccounts returns all accounts for the authenticated user.
 // https://developer.up.com.au/#get_accounts.
 func (c *Client) ListAccounts(
 	ctx context.Context,
 	opts ...ListAccountsOption,
 ) (accounts []AccountResource, err error) {
 
-	// setup tracing.
 	newCtx, span := otel.Tracer(c.tracerName).Start(ctx, "ListAccounts")
 	defer span.End()
 
-	// setup request.
 	sr := senderRequest{
 		method:  http.MethodGet,
 		path:    "/accounts",
 		queries: setupQueries(opts),
 	}
 
-	// retrieve accounts.
 	for {
-
-		// get response.
 		var resp AccountsPaginationWrapper
 		if _, err := c.sender(newCtx, sr, &resp); err != nil {
-			return nil, err
+			span.SetStatus(codes.Error, fmt.Sprintf("failed to list accounts: %v", err))
+			span.RecordError(err)
+			return nil, fmt.Errorf("listing accounts: %w", err)
 		}
-
-		// extract response data.
 		for _, a := range resp.Data {
 			accounts = append(accounts, a.Attributes)
 		}
-
-		// paginate?
 		if resp.Links.Next == "" {
 			break
 		}
@@ -85,4 +70,26 @@ func (c *Client) ListAccounts(
 	}
 
 	return accounts, nil
+}
+
+// GetAccount retrieves a single account by its ID.
+// https://developer.up.com.au/#get_accounts_id.
+func (c *Client) GetAccount(ctx context.Context, id string) (*AccountResource, error) {
+
+	newCtx, span := otel.Tracer(c.tracerName).Start(ctx, "GetAccount")
+	defer span.End()
+
+	var resp struct {
+		Data AccountDataWrapper `json:"data"`
+	}
+	if _, err := c.sender(newCtx, senderRequest{
+		method: http.MethodGet,
+		path:   fmt.Sprintf("/accounts/%s", id),
+	}, &resp); err != nil {
+		span.SetStatus(codes.Error, fmt.Sprintf("failed to get account %s: %v", id, err))
+		span.RecordError(err)
+		return nil, fmt.Errorf("getting account %s: %w", id, err)
+	}
+	attrs := resp.Data.Attributes
+	return &attrs, nil
 }
