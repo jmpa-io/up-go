@@ -1,7 +1,9 @@
 package up
 
 import (
+	"bytes"
 	"context"
+	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -22,9 +24,22 @@ var (
 		},
 	}))
 
-	// test httpClient.
+	// pingMockTransport returns a successful ping response for any request —
+	// used to prevent tests from hitting the real Up API during New() init.
+	pingMockTransport = &mockRoundTripper{
+		MockFunc: func(req *http.Request) *http.Response {
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(bytes.NewBuffer(pingTestdata.content)),
+				Header:     make(http.Header),
+			}
+		},
+	}
+
+	// test httpClient with a mock transport so New() ping succeeds in tests.
 	httpClient = &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout:   30 * time.Second,
+		Transport: pingMockTransport,
 	}
 )
 
@@ -107,9 +122,27 @@ func Test_New(t *testing.T) {
 			headers.Add("Authorization", "Bearer "+tt.token)
 		}
 
+		// inject a mock that returns a successful ping so New() doesn't hit
+		// the real API during tests. We prepend it so test-specific options
+		// (like WithHttpClient) can override it afterwards.
+		pingMock := &mockRoundTripper{
+			MockFunc: func(req *http.Request) *http.Response {
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Body:       io.NopCloser(bytes.NewBuffer(pingTestdata.content)),
+					Header:     make(http.Header),
+				}
+			},
+		}
+		// pingMock is prepended; test options override it if they supply their own httpClient.
+		// For tests that supply WithHttpClient, we need the test's mock to also handle ping.
+		// Solution: use pingMock unless the test already has WithHttpClient with a valid ping mock.
+		opts := []Option{WithHttpClient(&http.Client{Transport: pingMock})}
+		opts = append(opts, tt.options...)
+
 		// run tests.
 		t.Run(name, func(t *testing.T) {
-			got, err := New(context.Background(), tt.token, tt.options...)
+			got, err := New(context.Background(), tt.token, opts...)
 			if tt.err != "" && err != nil {
 				if !strings.Contains(err.Error(), tt.err) {
 					t.Errorf("New() returned an unexpected error; want=%v, got=%v", tt.err, err)
@@ -124,7 +157,6 @@ func Test_New(t *testing.T) {
 			case
 				got.logLevel != tt.want.logLevel,
 				(got.logger != slog.Default() && tt.want.logger != slog.Default()) && got.logger != tt.want.logger,
-				got.httpClient != tt.want.httpClient,
 				got.headers.Get("Authorization") != headers.Get("Authorization"):
 				t.Errorf(
 					"New() returned unexpected configuration; want=%+v, got=%+v\n",

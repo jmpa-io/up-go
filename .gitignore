@@ -1,18 +1,17 @@
-# ignore general files.
-.DS_Store
+# binaries
+up-go
+dist/
+
+# test artifacts
+*.test
+
+# environment files
+.env
+*.env
+
+# IDE
+.idea/
 .vscode/
 
-# ignore generated files.
-/out
-package.yml
-coverage.*
-dist/
-*.zip
-*.pem
-traces.txt
-
-# ignore test files.
-/test.sh
-
-# ignore compiled binaries in root.
-/main
+# OS
+.DS_Store
