@@ -31,17 +31,18 @@ func main() {
 		os.Exit(1)
 	}
 	for i, t := range transactions {
+		a := t.Attributes
 		fmt.Printf(
 			"%v. %s, %s, %s, %s, %s, %v, %s, %v\n",
 			i,
-			t.CreatedAt,
-			t.SettledAt,
-			t.Status,
-			t.Amount.CurrencyCode,
-			t.CardPurchaseMethod.Method,
-			t.Amount.Value,
-			t.RawText,
-			t.RoundUp.Amount.Value,
+			a.CreatedAt,
+			a.SettledAt,
+			a.Status,
+			a.Amount.CurrencyCode,
+			a.CardPurchaseMethod.Method,
+			a.Amount.Value,
+			a.RawText,
+			a.RoundUp.Amount.Value,
 		)
 	}
 }
