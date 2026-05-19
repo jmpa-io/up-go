@@ -28,3 +28,13 @@ func WithHttpClient(httpClient iHttpClient) Option {
 		return nil
 	}
 }
+
+// WithSkipAuthCheck disables the Ping call that normally happens at startup.
+// Use this when the Up API may be unreachable at init time (e.g. restrictive
+// corporate networks). Tools will still fail gracefully if unreachable.
+func WithSkipAuthCheck() Option {
+	return func(c *Client) error {
+		c.skipAuthCheck = true
+		return nil
+	}
+}
