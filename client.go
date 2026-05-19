@@ -22,9 +22,10 @@ type Client struct {
 	tracerName string // The name of the tracer output in the traces.
 
 	// config.
-	endpoint   string      // The endpoint to query against.
-	httpClient iHttpClient // The http client used when sending / receiving data from the endpoint.
-	headers    http.Header // The headers passed to the http client when sending / receiving data from the endpoint.
+	endpoint      string      // The endpoint to query against.
+	httpClient    iHttpClient // The http client used when sending / receiving data from the endpoint.
+	headers       http.Header // The headers passed to the http client when sending / receiving data from the endpoint.
+	skipAuthCheck bool        // Skip the Ping call on startup (useful when API is unreachable).
 
 	// misc.
 	logLevel slog.Level   // The log level of the default logger.
@@ -94,8 +95,11 @@ func New(ctx context.Context, token string, options ...Option) (*Client, error) 
 	c.headers = headers
 
 	// validate the token immediately by pinging the API.
-	if _, err := c.Ping(newCtx); err != nil {
-		return nil, ErrClientFailedToPing{err}
+	// Skipped if WithSkipAuthCheck was used.
+	if !c.skipAuthCheck {
+		if _, err := c.Ping(newCtx); err != nil {
+			return nil, ErrClientFailedToPing{err}
+		}
 	}
 
 	c.logger.Debug("client setup successfully")
