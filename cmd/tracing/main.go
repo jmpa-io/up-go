@@ -4,7 +4,9 @@ import (
 	"context"
 	"log/slog"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -62,8 +64,12 @@ func main() {
 		})),
 	}
 
+	// root context — cancelled on SIGINT/SIGTERM.
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer cancel()
+
 	// setup exporter.
-	exp, err := newExporter()
+	exp, err := newExporter(ctx)
 	if err != nil {
 		h.logger.Error("failed to setup exporter",
 			"type", "grpc",
@@ -78,7 +84,7 @@ func main() {
 		trace.WithResource(newResource(h.name, h.version, h.environment)),
 	)
 	defer func() {
-		if err := tp.Shutdown(context.TODO()); err != nil {
+		if err := tp.Shutdown(ctx); err != nil {
 			h.logger.Error("failed to shutdown tracer provider", "error", err)
 			os.Exit(1)
 		}
@@ -88,7 +94,7 @@ func main() {
 	// ---
 
 	// setup span.
-	ctx, span := otel.Tracer(h.name).Start(context.Background(), "main")
+	ctx, span := otel.Tracer(h.name).Start(ctx, "main")
 	defer span.End()
 
 	// retrieve token.
@@ -124,9 +130,9 @@ func newResource(app, version, env string) *resource.Resource {
 //
 // NOTE: set 'OTLP_EXPORTER_OTLP_TRACES_ENDPOINT' to change the endpoint from
 // https://localhost:4317 to another endpoint.
-func newExporter() (*otlptrace.Exporter, error) {
+func newExporter(ctx context.Context) (*otlptrace.Exporter, error) {
 	return otlptracegrpc.New(
-		context.TODO(),
+		ctx,
 		otlptracegrpc.WithInsecure(),
 	)
 }

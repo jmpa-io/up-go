@@ -13,3 +13,14 @@ type listOption struct {
 func newListOption(name, value string) listOption {
 	return listOption{name: name, value: value}
 }
+
+// query returns the name and value of this option as query parameter key/value.
+func (o listOption) query() (string, string) {
+	return o.name, o.value
+}
+
+// queryProvider is implemented by all list-option wrapper types so setupQueries
+// can iterate them without reflection.
+type queryProvider interface {
+	query() (string, string)
+}

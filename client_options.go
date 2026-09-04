@@ -1,6 +1,9 @@
 package up
 
-import "log/slog"
+import (
+	"log/slog"
+	"net/http"
+)
 
 // Option configures a departure client.
 type Option func(*Client) error
@@ -22,7 +25,9 @@ func WithLogger(logger *slog.Logger) Option {
 }
 
 // WithHttpClient overwrites the default httpClient used for API communication.
-func WithHttpClient(httpClient iHttpClient) Option {
+// Pass an *http.Client directly, or wrap a custom http.RoundTripper using
+// &http.Client{Transport: rt}.
+func WithHttpClient(httpClient *http.Client) Option {
 	return func(c *Client) error {
 		c.httpClient = httpClient
 		return nil
@@ -35,6 +40,23 @@ func WithHttpClient(httpClient iHttpClient) Option {
 func WithSkipAuthCheck() Option {
 	return func(c *Client) error {
 		c.skipAuthCheck = true
+		return nil
+	}
+}
+
+// WithEndpoint overrides the default Up API base URL. Useful for testing
+// against a mock server or a future staging environment.
+func WithEndpoint(endpoint string) Option {
+	return func(c *Client) error {
+		c.endpoint = endpoint
+		return nil
+	}
+}
+
+// WithTracerName overrides the tracer name used in OpenTelemetry spans.
+func WithTracerName(name string) Option {
+	return func(c *Client) error {
+		c.tracerName = name
 		return nil
 	}
 }
