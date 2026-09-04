@@ -10,11 +10,6 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-// An iHttpClient is an interface over http.Client.
-type iHttpClient interface {
-	Do(req *http.Request) (*http.Response, error)
-}
-
 // Client defines a client for this package.
 type Client struct {
 
@@ -22,10 +17,10 @@ type Client struct {
 	tracerName string // The name of the tracer output in the traces.
 
 	// config.
-	endpoint      string      // The endpoint to query against.
-	httpClient    iHttpClient // The http client used when sending / receiving data from the endpoint.
-	headers       http.Header // The headers passed to the http client when sending / receiving data from the endpoint.
-	skipAuthCheck bool        // Skip the Ping call on startup (useful when API is unreachable).
+	endpoint      string       // The endpoint to query against.
+	httpClient    *http.Client // The http client used when sending / receiving data from the endpoint.
+	headers       http.Header  // The headers passed to the http client when sending / receiving data from the endpoint.
+	skipAuthCheck bool         // Skip the Ping call on startup (useful when API is unreachable).
 
 	// misc.
 	logLevel slog.Level   // The log level of the default logger.
