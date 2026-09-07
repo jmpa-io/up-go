@@ -1,6 +1,6 @@
 module github.com/jmpa-io/up-go
 
-go 1.25.0
+go 1.26.5
 
 require (
 	go.opentelemetry.io/otel v1.43.0
