@@ -10,8 +10,9 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-// An iHttpClient is an interface over http.Client.
-type iHttpClient interface {
+// HTTPDoer is an interface over http.Client, allowing callers to supply a
+// custom HTTP client via WithHttpClient.
+type HTTPDoer interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
@@ -23,7 +24,7 @@ type Client struct {
 
 	// config.
 	endpoint      string      // The endpoint to query against.
-	httpClient    iHttpClient // The http client used when sending / receiving data from the endpoint.
+	httpClient    HTTPDoer    // The http client used when sending / receiving data from the endpoint.
 	headers       http.Header // The headers passed to the http client when sending / receiving data from the endpoint.
 	skipAuthCheck bool        // Skip the Ping call on startup (useful when API is unreachable).
 

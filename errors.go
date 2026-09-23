@@ -11,6 +11,8 @@ func (e ErrFailedMarshal) Error() string {
 	return fmt.Sprintf("failed to marshal data: %v", e.err)
 }
 
+func (e ErrFailedMarshal) Unwrap() error { return e.err }
+
 // ErrFailedUnmarshal is returned when an error returned from json.Unmarshal.
 type ErrFailedUnmarshal struct {
 	err error
@@ -19,3 +21,5 @@ type ErrFailedUnmarshal struct {
 func (e ErrFailedUnmarshal) Error() string {
 	return fmt.Sprintf("failed to unmarshal data: %v", e.err)
 }
+
+func (e ErrFailedUnmarshal) Unwrap() error { return e.err }

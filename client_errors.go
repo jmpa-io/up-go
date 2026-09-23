@@ -20,6 +20,8 @@ func (e ErrClientFailedToPing) Error() string {
 	return fmt.Sprintf("failed to ping Up API (token may be invalid): %v", e.err)
 }
 
+func (e ErrClientFailedToPing) Unwrap() error { return e.err }
+
 // ErrClientFailedToSetOption is returned when an option encounters an error
 // when trying to be set with the client.
 type ErrClientFailedToSetOption struct {
@@ -29,3 +31,5 @@ type ErrClientFailedToSetOption struct {
 func (e ErrClientFailedToSetOption) Error() string {
 	return fmt.Sprintf("failed to set option in client: %v", e.err)
 }
+
+func (e ErrClientFailedToSetOption) Unwrap() error { return e.err }
