@@ -13,7 +13,7 @@ func (e ErrFailedMarshal) Error() string {
 
 func (e ErrFailedMarshal) Unwrap() error { return e.err }
 
-// ErrFailedUnmarshal is returned when an error returned from json.Unmarshal.
+// ErrFailedUnmarshal is returned when an error is returned from json.Unmarshal.
 type ErrFailedUnmarshal struct {
 	err error
 }
