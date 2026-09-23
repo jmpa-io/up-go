@@ -8,11 +8,11 @@ endif
 TOKEN := $(shell aws ssm get-parameter --name "/tokens/up" --query 'Parameter.Value' --output text --with-decryption)
 
 # Targets.
-accounts: binary-go-accounts ## Build the 'accounts' binary.
-ping: binary-go-ping ## Build the 'ping' binary.
-tags: binary-go-tags ## Build the 'tags' binary.
-tracing: binary-go-tracing ## Build the `tracing` binary.
-transactions: binary-go-transactions ## Build the `transactions` binary.
+accounts: binary-go-accounts ## Builds the 'accounts' binary.
+ping: binary-go-ping ## Builds the 'ping' binary.
+tags: binary-go-tags ## Builds the 'tags' binary.
+tracing: binary-go-tracing ## Builds the 'tracing' binary.
+transactions: binary-go-transactions ## Builds the 'transactions' binary.
 run: accounts ping tags transactions tracing
 
 PHONY += accounts ping tags transactions tracing run

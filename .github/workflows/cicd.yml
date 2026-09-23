@@ -12,6 +12,7 @@ on:
     - 'Makefile*'
     - '**/*.go'
     - 'go.mod'
+    - 'go.sum'
   workflow_dispatch:
   repository_dispatch:
     types: [update-cicd]
