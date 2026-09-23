@@ -2,7 +2,7 @@ package up
 
 import "log/slog"
 
-// Option configures a departure client.
+// Option configures an up client.
 type Option func(*Client) error
 
 // WithLogLevel sets the log level for the default logger.
