@@ -123,12 +123,8 @@ func Test_ListTransactions(t *testing.T) {
 		// tracing context.
 		ctx := context.Background()
 
-		// setup client with mock.
-		c, _ := New(ctx, "xxxx",
-			WithHttpClient(&http.Client{
-				Transport: tt.mock,
-			}),
-		)
+		// setup client.
+		c := newTestClient(t, tt.mock)
 
 		// run tests.
 		t.Run(name, func(t *testing.T) {
@@ -163,7 +159,7 @@ func Test_ListTransactions(t *testing.T) {
 			// is there a mismatch from what we're expecting vs what we've got?
 			var foundErrs bool
 			for i := 0; i < len(got); i++ {
-				g := got[i]
+				g := got[i].Attributes
 				w := tt.want[i]
 				if g.Status != w.Status ||
 					g.RawText != w.RawText ||

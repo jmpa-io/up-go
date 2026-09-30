@@ -54,17 +54,17 @@ func (c *Client) sender(
 	_, span := otel.Tracer(c.tracerName).Start(ctx, "sender")
 	defer span.End()
 
-	// marshal body.
-	var body []byte
+	// setup request.
+	var bodyReader io.Reader
 	if !isNil(sr.body) {
-		body, err = json.Marshal(sr.body)
+		b, err := json.Marshal(sr.body)
 		if err != nil {
 			return nil, ErrFailedMarshal{err}
 		}
+		bodyReader = bytes.NewReader(b)
 	}
 
-	// setup request.
-	req, err := http.NewRequest(sr.method, c.endpoint+sr.path, bytes.NewReader(body))
+	req, err := http.NewRequest(sr.method, c.endpoint+sr.path, bodyReader)
 	if err != nil {
 		return nil, ErrSenderFailedSetupRequest{err}
 	}
@@ -72,8 +72,10 @@ func (c *Client) sender(
 		req.URL.RawQuery = sr.queries.Encode()
 	}
 
-	// add headers to request.
-	req.Header = c.headers
+	// clone the shared headers map — c.headers is read-only after init but
+	// net/http may write to the Header map during Do(), causing a data race
+	// when multiple goroutines call sender concurrently.
+	req.Header = c.headers.Clone()
 
 	// send request.
 	resp, err = c.httpClient.Do(req)

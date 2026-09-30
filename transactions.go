@@ -2,12 +2,14 @@ package up
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/codes"
 )
 
 // TransactionsPaginationWrapper is a pagination wrapper for a slice of
@@ -30,31 +32,25 @@ func ListTransactionsOptionPageSize(size int) ListTransactionsOption {
 }
 
 // ListTransactionsOptionStatus filters the transactions returned from the API
-// to those who are either "HELD" or "SETTLED". Use this option if, for example,
-// you'd like to list all transactions that are currently pending in Up.
+// to those who are either "HELD" or "SETTLED".
 func ListTransactionsOptionStatus(status TransactionStatus) ListTransactionsOption {
 	return ListTransactionsOption{newListOption("filter[status]", string(status))}
 }
 
 // ListTransactionsOptionSince filters the transactions returned from the API
-// to those that occurred on or after the specified 'since' timestamp. This is
-// useful for retrieving transactions within a specific time window. When used
-// with ListTransactionsOptionUntil, it defines the start of the window.
+// to those that occurred on or after the specified timestamp.
 func ListTransactionsOptionSince(since time.Time) ListTransactionsOption {
 	return ListTransactionsOption{newListOption("filter[since]", since.Format(time.RFC3339))}
 }
 
 // ListTransactionsOptionUntil filters the transactions returned from the API
-// to those that occurred on or before the specified 'until' timestamp. When
-// used with ListTransactionsOptionSince, it defines the end of the time
-// window. If only ListTransactionsOptionUntil is provided, all transactions
-// up to the specified time will be returned.
+// to those that occurred on or before the specified timestamp.
 func ListTransactionsOptionUntil(until time.Time) ListTransactionsOption {
 	return ListTransactionsOption{newListOption("filter[until]", until.Format(time.RFC3339))}
 }
 
 // ListTransactionsOptionCategory filters the transactions returned from the API
-// to those that are categorized by the given category.
+// to those that are categorized by the given Up category ID.
 func ListTransactionsOptionCategory(category string) ListTransactionsOption {
 	return ListTransactionsOption{newListOption("filter[category]", category)}
 }
@@ -65,40 +61,26 @@ func ListTransactionsOptionTag(tag string) ListTransactionsOption {
 	return ListTransactionsOption{newListOption("filter[tag]", tag)}
 }
 
-// ListTransactions returns a list of ALL transactions associated with authed
-// user from the API. This function supports pagination, and is configurable by
-// the given ListTransactionsOptions options.
-// https://developer.up.com.au/#get_transactions.
-func (c *Client) ListTransactions(ctx context.Context,
-	options ...ListTransactionsOption,
-) (transactions []TransactionResource, err error) {
+// listTransactions is the shared paginated fetch used by both ListTransactions
+// and ListTransactionsByAccount.
+func (c *Client) listTransactions(
+	ctx context.Context,
+	path string,
+	options []ListTransactionsOption,
+) (transactions []TransactionDataWrapper, err error) {
 
-	// setup tracing.
-	newCtx, span := otel.Tracer(c.tracerName).Start(ctx, "ListTransactions")
-	defer span.End()
-
-	// setup request.
 	sr := senderRequest{
 		method:  http.MethodGet,
-		path:    "/transactions",
+		path:    path,
 		queries: setupQueries(options),
 	}
 
-	// retrieve transactions.
 	for {
-
-		// get response.
 		var resp TransactionsPaginationWrapper
-		if _, err := c.sender(newCtx, sr, &resp); err != nil {
-			return nil, err
+		if _, err := c.sender(ctx, sr, &resp); err != nil {
+			return nil, fmt.Errorf("fetching transactions from %s: %w", path, err)
 		}
-
-		// extract response data.
-		for _, t := range resp.Data {
-			transactions = append(transactions, t.Attributes)
-		}
-
-		// paginate?
+		transactions = append(transactions, resp.Data...)
 		if resp.Links.Next == "" {
 			break
 		}
@@ -107,3 +89,71 @@ func (c *Client) ListTransactions(ctx context.Context,
 	}
 	return transactions, nil
 }
+
+// ListTransactions returns all transactions across all accounts for the
+// authenticated user. Supports filtering via ListTransactionsOption.
+// https://developer.up.com.au/#get_transactions.
+func (c *Client) ListTransactions(ctx context.Context,
+	options ...ListTransactionsOption,
+) ([]TransactionDataWrapper, error) {
+
+	newCtx, span := otel.Tracer(c.tracerName).Start(ctx, "ListTransactions")
+	defer span.End()
+
+	txns, err := c.listTransactions(newCtx, "/transactions", options)
+	if err != nil {
+		span.SetStatus(codes.Error, fmt.Sprintf("failed to list transactions: %v", err))
+		span.RecordError(err)
+		return nil, err
+	}
+	return txns, nil
+}
+
+// ListTransactionsByAccount returns all transactions for a specific account.
+// https://developer.up.com.au/#get_accounts_accountId_transactions.
+func (c *Client) ListTransactionsByAccount(
+	ctx context.Context,
+	accountID string,
+	options ...ListTransactionsOption,
+) ([]TransactionDataWrapper, error) {
+
+	newCtx, span := otel.Tracer(c.tracerName).Start(ctx, "ListTransactionsByAccount")
+	defer span.End()
+
+	txns, err := c.listTransactions(newCtx,
+		fmt.Sprintf("/accounts/%s/transactions", accountID),
+		options,
+	)
+	if err != nil {
+		span.SetStatus(codes.Error, fmt.Sprintf("failed to list transactions for account %s: %v", accountID, err))
+		span.RecordError(err)
+		return nil, err
+	}
+	return txns, nil
+}
+
+// GetTransaction retrieves a single transaction by its ID, including the real
+// timestamp, rawText, tags, and category relationship data.
+// https://developer.up.com.au/#get_transactions_id.
+func (c *Client) GetTransaction(
+	ctx context.Context,
+	id string,
+) (*TransactionDataWrapper, error) {
+
+	newCtx, span := otel.Tracer(c.tracerName).Start(ctx, "GetTransaction")
+	defer span.End()
+
+	var resp struct {
+		Data TransactionDataWrapper `json:"data"`
+	}
+	if _, err := c.sender(newCtx, senderRequest{
+		method: http.MethodGet,
+		path:   fmt.Sprintf("/transactions/%s", id),
+	}, &resp); err != nil {
+		span.SetStatus(codes.Error, fmt.Sprintf("failed to get transaction %s: %v", id, err))
+		span.RecordError(err)
+		return nil, fmt.Errorf("getting transaction %s: %w", id, err)
+	}
+	return &resp.Data, nil
+}
+
