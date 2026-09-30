@@ -4,5 +4,5 @@ package up
 
 import "time"
 
-// A location used for tests.
-var location = time.FixedZone("AEST", 11*60*60)
+// A location used for tests. +11:00 is AEDT (daylight saving); AEST is +10.
+var location = time.FixedZone("AEDT", 11*60*60)
