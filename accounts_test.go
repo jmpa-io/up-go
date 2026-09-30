@@ -88,12 +88,8 @@ func Test_ListAccounts(t *testing.T) {
 		// tracing context.
 		ctx := context.Background()
 
-		// setup client with mock.
-		c, _ := New(ctx, "xxxx",
-			WithHttpClient(&http.Client{
-				Transport: tt.mock,
-			}),
-		)
+		// setup client.
+		c := newTestClient(t, tt.mock)
 
 		// run tests.
 		t.Run(name, func(t *testing.T) {
