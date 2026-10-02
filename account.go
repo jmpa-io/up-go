@@ -23,6 +23,10 @@ const (
 
 // AccountResource defines the core details of an account.
 type AccountResource struct {
+	// ID is the account's unique identifier. It lives on the JSON:API resource, not its
+	// attributes, so it is filled in by ListAccounts/GetAccount; without it callers can't
+	// pass an account to ListTransactionsByAccount.
+	ID            string               `json:"id,omitempty"`
 	DisplayName   string               `json:"displayName"`
 	AccountType   AccountType          `json:"accountType"`
 	OwnershipType AccountOwnershipType `json:"ownershipType"`

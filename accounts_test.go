@@ -145,3 +145,29 @@ func Test_ListAccounts(t *testing.T) {
 		})
 	}
 }
+
+// ListAccounts must expose each account's ID: ListTransactionsByAccount needs one, and the
+// ID is on the JSON:API resource rather than its attributes.
+func Test_ListAccounts_IncludesID(t *testing.T) {
+	body := `{"data":[{"type":"accounts","id":"acc-123","attributes":{"displayName":"Spending","accountType":"TRANSACTIONAL","ownershipType":"INDIVIDUAL","balance":{"currencyCode":"AUD","value":"1.00","valueInBaseUnits":100},"createdAt":"2023-01-01T00:00:00+10:00"},"relationships":{"transactions":{"links":{"related":"x"}}},"links":{"self":"x"}}],"links":{"prev":null,"next":null}}`
+	mock := &mockRoundTripper{
+		MockFunc: func(req *http.Request) *http.Response {
+			return &http.Response{StatusCode: http.StatusOK, Body: io.NopCloser(bytes.NewBufferString(body)), Header: make(http.Header)}
+		},
+	}
+	c := newTestClient(t, mock)
+	got, err := c.ListAccounts(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 1 || got[0].ID != "acc-123" {
+		t.Fatalf("expected one account with ID acc-123, got %+v", got)
+	}
+	out, err := c.ListAccountsString(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(out, `"id": "acc-123"`) {
+		t.Errorf("ListAccountsString output is missing the id:\n%s", out)
+	}
+}
