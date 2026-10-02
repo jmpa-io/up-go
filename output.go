@@ -4,10 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"strings"
 )
 
 func toJSON(v any) string {
+	// A nil slice marshals as null; callers (and models) expect an empty list.
+	if rv := reflect.ValueOf(v); rv.Kind() == reflect.Slice && rv.IsNil() {
+		return "[]"
+	}
 	b, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {
 		safe, _ := json.Marshal(err.Error())
