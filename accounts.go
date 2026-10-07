@@ -60,7 +60,9 @@ func (c *Client) ListAccounts(
 			return nil, fmt.Errorf("listing accounts: %w", err)
 		}
 		for _, a := range resp.Data {
-			accounts = append(accounts, a.Attributes)
+			acc := a.Attributes
+			acc.ID = a.ID
+			accounts = append(accounts, acc)
 		}
 		if resp.Links.Next == "" {
 			break
@@ -91,5 +93,6 @@ func (c *Client) GetAccount(ctx context.Context, id string) (*AccountResource, e
 		return nil, fmt.Errorf("getting account %s: %w", id, err)
 	}
 	attrs := resp.Data.Attributes
+	attrs.ID = resp.Data.ID
 	return &attrs, nil
 }
