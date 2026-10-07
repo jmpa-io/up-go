@@ -2,10 +2,9 @@ package up
 
 import (
 	"log/slog"
-	"net/http"
 )
 
-// Option configures a departure client.
+// Option configures an up client.
 type Option func(*Client) error
 
 // WithLogLevel sets the log level for the default logger.
@@ -25,9 +24,7 @@ func WithLogger(logger *slog.Logger) Option {
 }
 
 // WithHttpClient overwrites the default httpClient used for API communication.
-// Pass an *http.Client directly, or wrap a custom http.RoundTripper using
-// &http.Client{Transport: rt}.
-func WithHttpClient(httpClient *http.Client) Option {
+func WithHttpClient(httpClient HTTPDoer) Option {
 	return func(c *Client) error {
 		c.httpClient = httpClient
 		return nil
