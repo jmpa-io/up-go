@@ -5,7 +5,8 @@ PROJECT=up-go
 endif
 
 # Variables.
-TOKEN := $(shell aws ssm get-parameter --name "/tokens/up" --query 'Parameter.Value' --output text --with-decryption)
+# NOTE: TOKEN is recursively expanded so AWS is only called by `get-token`.
+TOKEN = $(shell aws ssm get-parameter --name "/tokens/up" --query 'Parameter.Value' --output text --with-decryption)
 
 # Targets.
 accounts: binary-go-accounts ## Builds the 'accounts' binary.
