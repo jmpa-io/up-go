@@ -72,4 +72,3 @@ func Test_isNil(t *testing.T) {
 		})
 	}
 }
-
