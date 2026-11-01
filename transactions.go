@@ -156,4 +156,3 @@ func (c *Client) GetTransaction(
 	}
 	return &resp.Data, nil
 }
-
