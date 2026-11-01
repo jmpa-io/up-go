@@ -106,4 +106,3 @@ func New(ctx context.Context, token string, options ...Option) (*Client, error) 
 	c.logger.Debug("client setup successfully")
 	return c, nil
 }
-
